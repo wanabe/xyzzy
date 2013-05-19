@@ -20,10 +20,10 @@ struct symbols
 };
 
 #define STR(a) #a
-#define DEF(a, b, c, d, e, f, g) {STR (a), STR (b), STR (c), d, e, f, g}
-#define DEFX(a, b, c, d, e, f, g) {a, STR (b), STR (c), d, e, f, g}
+#define DEF(a, b, c, d, e, f, g) {STR(a), b, c, d, e, f, g}
+#define DEFX(a, b, c, d, e, f, g) {a, b, c, d, e, f, g}
 
-#define CAT CONCAT
+#define CAT(a, b) STR(a) STR(b)
 
 #define DEFSF(a, b, c) DEF (a, b, c, 2, 0, FFspecial_form, 0)
 #define DEFSF2(lname, cname) DEFSF (lname, CAT (F, cname), CAT (S, cname))
@@ -62,24 +62,26 @@ struct symbols
 #define DEFCMD3(name, req, opt, f, g) \
   DEFCMD (name, CAT (F, name), CAT (S, name), req, opt, f, g)
 
-#define VDEF(a, b, c) {STR (a), 0, STR (b), 0, 0, c}
+#define VDEF(a, b, c) {STR (a), 0, b, 0, 0, c}
 
 #define DEFCONST(a, b) VDEF (a, b, SFconstant | SFspecial)
 #define DEFCONST2Q(name) DEFCONST (name, CAT (Q, name))
 #define DEFKWD DEFCONST
 #define DEFKWD2(name) DEFCONST (name, CAT (K, name))
-#define DEFVAR(a, b) VDEF (a, b, SFspecial)
-#define DEFVAR2(name) DEFVAR (name, CAT (V, name))
-#define SI_DEFVAR2(name) DEFVAR (name, CAT (Vsi_, name))
-#define CL_DEFVAR2(name) DEFVAR (name, CAT (Vcl_, name))
-#define DEFLAMBDAKEY(a, b) VDEF (a, b, SFconstant | SFlambda_key)
-#define MAKE_SYMBOL(a, b) VDEF (a, b, 0)
-#define MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (V, name))
-#define MAKE_SYMBOL2Q(name) MAKE_SYMBOL (name, CAT (Q, name))
-#define MAKE_SYMBOL2QC(name) MAKE_SYMBOL (name, CAT (QC, name))
+#define DEFVAR_(a, b) VDEF (a, b, SFspecial)
+#define DEFVAR(a, b) DEFVAR_(a, STR(b))
+#define DEFVAR2(name) DEFVAR_ (name, CAT (V, name))
+#define SI_DEFVAR2(name) DEFVAR_ (name, CAT (Vsi_, name))
+#define CL_DEFVAR2(name) DEFVAR_ (name, CAT (Vcl_, name))
+#define DEFLAMBDAKEY(a, b) VDEF (a, STR(b), SFconstant | SFlambda_key)
+#define MAKE_SYMBOL_(a, b) VDEF (a, b, 0)
+#define MAKE_SYMBOL(a, b) MAKE_SYMBOL_(a, STR(b))
+#define MAKE_SYMBOL2(name) MAKE_SYMBOL_ (name, CAT (V, name))
+#define MAKE_SYMBOL2Q(name) MAKE_SYMBOL_ (name, CAT (Q, name))
+#define MAKE_SYMBOL2QC(name) MAKE_SYMBOL_ (name, CAT (QC, name))
 #define MAKE_SYMBOL2F(name, f) VDEF (name, CAT (V, name), f)
-#define SI_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vsi_, name))
-#define CL_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vcl_, name))
+#define SI_MAKE_SYMBOL2(name) MAKE_SYMBOL_ (name, CAT (Vsi_, name))
+#define CL_MAKE_SYMBOL2(name) MAKE_SYMBOL_ (name, CAT (Vcl_, name))
 
 #define DEFCONDITION(a, b, c, d) {0, 0, "Q" STR (a), 0, 0, 0}
 
