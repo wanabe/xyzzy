@@ -13,4 +13,8 @@
 #define _WIN32_WINNT 0x0502
 #endif
 
+#ifdef __MINGW32__
+#include <sdkddkver.h>
+#else
 #include <SDKDDKVer.h>
+#endif

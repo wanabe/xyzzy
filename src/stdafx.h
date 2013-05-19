@@ -35,7 +35,11 @@
 #include <setjmp.h>
 #include <share.h>
 #include <shlobj.h>
+#ifdef __MINGW32__
+#include <shobjidl.h>
+#else
 #include <ShObjIdl.h>
+#endif
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
