@@ -1,7 +1,7 @@
 all: Buffer.o
 
 Buffer.o: Buffer.cc chtab.cc msgcode.h vars-decl.h fns-decl.h
-	$(CXX) -I privctrl -c -o $@ $<
+	$(CXX) -I privctrl -fpermissive -c -o $@ $<
 gen-ctab.exe: gen-ctab.cc
 	$(CXX) -o $@ $<
 gen-msg.exe: gen-msg.cc
