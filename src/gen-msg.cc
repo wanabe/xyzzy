@@ -52,8 +52,13 @@ print_quote_rc (const char *p)
     }
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_msg (int argc, char **argv)
+#endif
 {
   if (argc == 1)
     exit (2);

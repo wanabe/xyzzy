@@ -3034,8 +3034,13 @@ print_version ()
   printf ("int dump_version = %d;\n", time (0));
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_syms (int argc, char **argv)
+#endif
 {
   if (argc == 1)
     exit (2);

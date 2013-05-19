@@ -241,8 +241,13 @@ hqxtab ()
   printf ("};\n\n");
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_ctab (int argc, char **argv)
+#endif
 {
   ctype ();
   translate ();
