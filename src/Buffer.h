@@ -3,6 +3,7 @@
 
 # include "alloc.h"
 # include "kanji.h"
+# include "syntax.h"
 
 enum wcolor_index
 {
@@ -222,7 +223,6 @@ class xwrite_stream;
 class xwrite_buffer;
 class save_excursion;
 class save_restriction;
-enum syntax_code;
 
 class FileTime: public _FILETIME
 {

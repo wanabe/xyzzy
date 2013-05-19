@@ -273,6 +273,12 @@ make_win32_dde_handle ()
 struct Window;
 struct Buffer;
 
+struct Region
+{
+  point_t p1;
+  point_t p2;
+};
+
 # include "process.h"
 # include "dll.h"
 # include "chunk.h"
@@ -351,12 +357,6 @@ struct ModelineParam
   ModelineParam ();
   ~ModelineParam ();
   void init (HFONT);
-};
-
-struct Region
-{
-  point_t p1;
-  point_t p2;
 };
 
 class Application

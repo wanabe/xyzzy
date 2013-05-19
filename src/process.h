@@ -8,9 +8,10 @@
 # define PS_RUN 1
 # define PS_EXIT 2
 
+#include "Buffer.h"
+
 class Process;
 struct Buffer;
-enum eol_code;
 
 class lprocess: public lisp_object
 {
