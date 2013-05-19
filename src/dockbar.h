@@ -21,7 +21,7 @@ class dock_bar: public xlist_node <dock_bar>
 public:
   HWND b_hwnd;
 private:
-  friend dock_frame;
+  friend class dock_frame;
   RECT b_rect;
   POINT b_required;
   WNDPROC b_wndproc;
@@ -177,7 +177,7 @@ public:
         }
       void incref () {b_ref++;}
       int decref () {return --b_ref;}
-      friend tool_bm;
+      friend class tool_bm;
     public:
       operator HBITMAP () const {return b_hbm;}
     };

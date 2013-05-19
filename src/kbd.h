@@ -28,7 +28,7 @@ class kbd_queue
 
   void run_hook (lisp, int);
   void run_activate_hook ();
-  friend kbd_macro_context;
+  friend class kbd_macro_context;
   int putraw (lChar);
 public:
   enum input_mode
@@ -63,7 +63,7 @@ private:
       ~sleep_timer ();
       void wait (int, int);
     };
-  friend sleep_timer;
+  friend class sleep_timer;
 
 public:
   class disable_kbd
@@ -82,7 +82,7 @@ public:
             (int &)d_kbdq.current_mode &= ~kbd_queue::im_disable;
         }
     };
-  friend disable_kbd;
+  friend class disable_kbd;
 
   input_mode mode () const;
   int save_p () const;
@@ -240,7 +240,7 @@ public:
   kbd_macro_context (kbd_queue &, lisp);
   ~kbd_macro_context ();
   int running () const;
-  friend kbd_queue;
+  friend class kbd_queue;
 };
 
 inline
