@@ -69,12 +69,12 @@ gen_msg (int argc, char **argv)
     }
   else if (!strcmp (argv[1], "-enum"))
     {
-      printf ("enum message_code\n{\n");
+      printf ("#ifndef _msgcode_h_\n# define _msgcode_h_\nenum message_code\n{\n");
       int i;
       for (i = 0; i < numberof (msg) - 1; i++)
         printf ("  %s,\n", msg[i].ident);
       printf ("  %s\n", msg[i].ident);
-      printf ("};\n");
+      printf ("};\n#endif\n");
     }
   else if (!strcmp (argv[1], "-c"))
     {

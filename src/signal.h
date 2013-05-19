@@ -2,7 +2,7 @@
 #ifndef _signal_h_
 # define _signal_h_
 
-enum message_code;
+#include "msgcode.h"
 
 void init_condition ();
 
