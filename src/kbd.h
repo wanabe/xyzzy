@@ -289,7 +289,7 @@ public:
   struct pair
     {
       Char *comp;
-      int compl;
+      int comp_l;
       Char *read;
       int readl;
     };
