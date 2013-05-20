@@ -1025,9 +1025,9 @@ Window::move_all_windows (int update)
           cx = cy = 0;
         }
 
-      RECT or, nr;
+      RECT o_r, nr;
       if (!mod)
-        GetWindowRect (wp->w_hwnd, &or);
+        GetWindowRect (wp->w_hwnd, &o_r);
 
       SIZE size;
       size.cx = max (0, int (wp->w_rect.right - wp->w_rect.left - cx));
@@ -1040,7 +1040,7 @@ Window::move_all_windows (int update)
       if (!mod)
         {
           GetWindowRect (wp->w_hwnd, &nr);
-          mod = memcmp (&or, &nr, sizeof or);
+          mod = memcmp (&o_r, &nr, sizeof o_r);
         }
 
       RECT r;
@@ -1049,7 +1049,7 @@ Window::move_all_windows (int update)
       if (wp->w_hwnd_ml)
         {
           if (!mod)
-            GetWindowRect (wp->w_hwnd_ml, &or);
+            GetWindowRect (wp->w_hwnd_ml, &o_r);
           wp->w_ml_size.cx = size.cx;
           wp->w_ml_size.cy = mlh;
           InvalidateRect (wp->w_hwnd_ml, 0, 1);
@@ -1058,7 +1058,7 @@ Window::move_all_windows (int update)
           if (!mod)
             {
               GetWindowRect (wp->w_hwnd_ml, &nr);
-              mod = memcmp (&or, &nr, sizeof or);
+              mod = memcmp (&o_r, &nr, sizeof o_r);
             }
         }
     }
