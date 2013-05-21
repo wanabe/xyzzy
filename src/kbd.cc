@@ -1161,9 +1161,9 @@ store_mbs (Char *b, const char *string, int l)
 }
 
 void
-ime_comp_queue::push (const char *comp, int compl, const char *read, int readl)
+ime_comp_queue::push (const char *comp, int comp_l, const char *read, int readl)
 {
-  int cl = count_mblen (comp, compl);
+  int cl = count_mblen (comp, comp_l);
   int rl = count_mblen (read, readl);
   Char *b = (Char *)malloc ((cl + rl) * sizeof (Char));
   if (!b)
@@ -1171,10 +1171,10 @@ ime_comp_queue::push (const char *comp, int compl, const char *read, int readl)
   qindex = (qindex + 1) % MAX_QUEUE;
   xfree (qbuf[qindex].comp);
   qbuf[qindex].comp = b;
-  qbuf[qindex].compl = cl;
+  qbuf[qindex].comp_l = cl;
   qbuf[qindex].read = b + cl;
   qbuf[qindex].readl = rl;
-  store_mbs (qbuf[qindex].comp, comp, compl);
+  store_mbs (qbuf[qindex].comp, comp, comp_l);
   store_mbs (qbuf[qindex].read, read, readl);
 }
 
@@ -1197,17 +1197,17 @@ store_wcs (Char *b0, const ucs2_t *w, int l, const Char *tab)
 }
 
 void
-ime_comp_queue::push (const ucs2_t *comp, int compl, const ucs2_t *read, int readl,
+ime_comp_queue::push (const ucs2_t *comp, int comp_l, const ucs2_t *read, int readl,
                       const Char *tab)
 {
-  Char *b = (Char *)malloc ((compl + readl) * (sizeof (Char) * 2));
+  Char *b = (Char *)malloc ((comp_l + readl) * (sizeof (Char) * 2));
   if (!b)
     return;
   qindex = (qindex + 1) % MAX_QUEUE;
   xfree (qbuf[qindex].comp);
   qbuf[qindex].comp = b;
-  qbuf[qindex].compl = store_wcs (qbuf[qindex].comp, comp, compl, tab);
-  qbuf[qindex].read = b + compl * 2;
+  qbuf[qindex].comp_l = store_wcs (qbuf[qindex].comp, comp, comp_l, tab);
+  qbuf[qindex].read = b + comp_l * 2;
   qbuf[qindex].readl = store_wcs (qbuf[qindex].read, read, readl, tab);
 }
 
@@ -1333,7 +1333,7 @@ Fget_ime_composition_string ()
   const ime_comp_queue::pair *p = app.ime_compq.fetch ();
   if (!p)
     return Qnil;
-  return xcons (make_string (p->comp, p->compl),
+  return xcons (make_string (p->comp, p->comp_l),
                 make_string (p->read, p->readl));
 }
 
@@ -1343,7 +1343,7 @@ Fpop_ime_composition_string ()
   const ime_comp_queue::pair *p = app.ime_compq.pop ();
   if (!p)
     return Qnil;
-  return xcons (make_string (p->comp, p->compl),
+  return xcons (make_string (p->comp, p->comp_l),
                 make_string (p->read, p->readl));
 }
 
