@@ -38,8 +38,13 @@ static const char *const intermediate_chars[] =
 #define STATE_TERM 0x40
 #define MAX_STATE 64
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_iso2022state (int argc, char **argv)
+#endif
 {
   u_char chars_buf[257], *const chars = chars_buf + 1;
   u_char chars_rev[256];
