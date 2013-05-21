@@ -1,8 +1,13 @@
 #include "gen-stdafx.h"
 #include "jisx0212-width.h"
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_jisx0212_hash (int argc, char **argv)
+#endif
 {
   Char ic[sizeof jisx0212_width_table * 8];
   int nic = 0;
