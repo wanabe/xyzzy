@@ -583,7 +583,7 @@ font_exist_p (const HDC hdc, const char *face, BYTE charset)
   bool exists = false;
 
   LOGFONT font;
-  memset (&font, 0, sizeof LOGFONT);
+  memset (&font, 0, sizeof(LOGFONT));
   font.lfCharSet = charset;
   strcpy (font.lfFaceName, face);
 
