@@ -1908,7 +1908,7 @@ class SaveCtlString
   const Char *ctle;
   SaveCtlString (Format &, const Char *, int);
   ~SaveCtlString ();
-  friend Format;
+  friend class Format;
 };
 
 class UpAndOut
@@ -1916,7 +1916,7 @@ class UpAndOut
   UpAndOut (int c) : colon (c) {}
 public:
   int colon;
-  friend Format;
+  friend class Format;
 };
 
 inline
