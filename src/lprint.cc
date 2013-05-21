@@ -1906,6 +1906,7 @@ class SaveCtlString
   Format &fmt;
   const Char *ctl;
   const Char *ctle;
+public:
   SaveCtlString (Format &, const Char *, int);
   ~SaveCtlString ();
   friend class Format;
