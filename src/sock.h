@@ -60,7 +60,7 @@ public:
       static hostent *host (const void *, int, int);
       static servent *serv (const char *, const char *);
     };
-  friend netdb;
+  friend class netdb;
 
   struct solinger: public ::linger
     {
