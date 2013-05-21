@@ -194,14 +194,14 @@ GlobalIME::ImmSetOpenStatus (HIMC himc, BOOL f)
 
 BOOL
 GlobalIME::ImmSetCompositionString (HIMC himc, DWORD index, void *comp,
-                                    DWORD compl, void *read, DWORD readl)
+                                    DWORD comp_l, void *read, DWORD readl)
 {
 #ifdef HAVE_DIMM_H
   if (gi_app)
     return gi_app->SetCompositionStringA (himc, index, comp,
-                                          compl, read, readl) == S_OK;
+                                          comp_l, read, readl) == S_OK;
 #endif /* HAVE_DIMM_H */
-  return ::ImmSetCompositionString (himc, index, comp, compl, read, readl);
+  return ::ImmSetCompositionString (himc, index, comp, comp_l, read, readl);
 }
 
 BOOL
