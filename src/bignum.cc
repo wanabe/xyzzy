@@ -695,7 +695,7 @@ remainder (const bignum_rep *r, u_short div)
   return rem;
 }
 
-#ifdef _M_IX86
+#if defined (_M_IX86) && !defined (__GNUC__)
 # pragma warning (disable:4035)
 static int
 divide (const u_short *x, int xl, u_short xdiv, u_short *r)
