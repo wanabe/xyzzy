@@ -40,8 +40,13 @@ buildhash (const int *from, const int *to, int len, const char *name)
     }
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_utf2sjis (int argc, char **argv)
+#endif
 {
   buildhash (internal, shiftjis, numberof (internal),
              "static const struct {Char cc; ucs2_t wc;} utf_internal2shiftjis_hash");
