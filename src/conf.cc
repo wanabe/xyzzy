@@ -219,19 +219,19 @@ conf_write_string (const char *section, const char *name, const char *string)
 }
 
 static void
-adjust_geometry (RECT &r, const RECT &or, int posp, int sizep)
+adjust_geometry (RECT &r, const RECT &o_r, int posp, int sizep)
 {
   if (!sizep)
     {
-      r.right = r.left + or.right - or.left;
-      r.bottom = r.top + or.bottom - or.top;
+      r.right = r.left + o_r.right - o_r.left;
+      r.bottom = r.top + o_r.bottom - o_r.top;
     }
   if (!posp)
     {
-      r.right += or.left - r.left;
-      r.bottom += or.top - r.top;
-      r.left = or.left;
-      r.top = or.top;
+      r.right += o_r.left - r.left;
+      r.bottom += o_r.top - r.top;
+      r.left = o_r.left;
+      r.top = o_r.top;
     }
 }
 
