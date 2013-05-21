@@ -25,13 +25,13 @@ center_window (HWND hwnd)
   if (!owner)
     owner = app.toplev;
 
-  RECT dr, or;
+  RECT dr, o_r;
   GetWindowRect (hwnd, &dr);
-  GetWindowRect (owner, &or);
+  GetWindowRect (owner, &o_r);
 
-  LONG left = (or.left + (or.right - or.left) / 3
+  LONG left = (o_r.left + (o_r.right - o_r.left) / 3
                - (dr.right - dr.left) / 3);
-  LONG top = (or.top + (or.bottom - or.top) / 3
+  LONG top = (o_r.top + (o_r.bottom - o_r.top) / 3
               - (dr.bottom - dr.top) / 3);
 
   RECT work;
