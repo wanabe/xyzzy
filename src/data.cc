@@ -970,9 +970,9 @@ char *ldataP::ld_upper_bound;
 char *ldataP::ld_lower_bound;
 
 #define DECLARE_LDATA(a, b) \
-  ldataP ldata <a, b>::l_ld; \
-  int ldata <a, b>::l_nuses; \
-  int ldata <a, b>::l_nfrees;
+  template <> ldataP ldata <a, b>::l_ld; \
+  template <> int ldata <a, b>::l_nuses; \
+  template <> int ldata <a, b>::l_nfrees;
 #include "dataP.h"
 
 static void
