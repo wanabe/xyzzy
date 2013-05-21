@@ -152,8 +152,13 @@ output (u_short *buf, int n)
   printf ("};\n\n");
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_ktab (int argc, char **argv)
+#endif
 {
   int i;
   u_short buf[256];
