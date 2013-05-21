@@ -7,16 +7,16 @@ file_masks::match (const char *name) const
 {
   if (empty_p ())
     return 0;
-  int not = 0, match = 0;
+  int not_pattern = 0, match = 0;
   for (char **p = fm_masks; *p; p++)
     if (**p == GLOB_NOT)
       {
         match |= pathname_match_p (*p + 1, name);
-        not = 1;
+        not_pattern = 1;
       }
     else if (pathname_match_p (*p, name))
       return 1;
-  return not ? !match : 0;
+  return not_pattern ? !match : 0;
 }
 
 char **
@@ -165,10 +165,10 @@ pathname_match_p1 (const char *pat, const char *str, int nodot)
               }
             if (!*s)
               return 0;
-            int not = 0;
+            int not_pattern = 0;
             if (*p == '^')
               {
-                not = 1;
+                not_pattern = 1;
                 p++;
               }
 
@@ -183,7 +183,7 @@ pathname_match_p1 (const char *pat, const char *str, int nodot)
                         if (x >= u_int ((c << 8) + *p)
                             && x <= u_int ((p[2] << 8) + p[3]))
                           {
-                            not ^= 1;
+                            not_pattern ^= 1;
                             break;
                           }
                         p += 4;
@@ -192,7 +192,7 @@ pathname_match_p1 (const char *pat, const char *str, int nodot)
                       {
                         if (u_int (c) == *s && *p == s[1])
                           {
-                            not ^= 1;
+                            not_pattern ^= 1;
                             break;
                           }
                         p++;
@@ -205,19 +205,19 @@ pathname_match_p1 (const char *pat, const char *str, int nodot)
                         int x = char_upcase (*s);
                         if (x >= char_upcase (c) && x <= char_upcase (p[1]))
                           {
-                            not ^= 1;
+                            not_pattern ^= 1;
                             break;
                           }
                         p += 2;
                       }
                     else if (char_upcase (c) == char_upcase (*s))
                       {
-                        not ^= 1;
+                        not_pattern ^= 1;
                         break;
                       }
                   }
               }
-            if (!not)
+            if (!not_pattern)
               return 0;
             p = pe + 1;
             s += (SJISP (*s) && s[1]) ? 2 : 1;
