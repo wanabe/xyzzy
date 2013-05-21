@@ -4,6 +4,21 @@
 
 # include <stddef.h>
 
+# if defined(__GNUC__) && __cplusplus < 201103L
+// see http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2431.pdf
+const class {
+public:
+  template<class T>
+    operator T*() const
+    { return 0; }
+  template<class C, class T>
+    operator T C::*() const
+    { return 0; }
+private:
+  void operator&() const;
+} nullptr = {};
+# endif
+
 void *xmalloc (size_t);
 void *xrealloc (void *, size_t);
 void xfree (void *);
