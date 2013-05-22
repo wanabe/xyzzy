@@ -859,10 +859,10 @@ skip_chars (lisp chars, int dir)
   if (p == pe)
     return Qnil;
 
-  int not = 0;
+  int not_char = 0;
   if (*p == '^')
     {
-      not = 1;
+      not_char = 1;
       if (p == pe)
         return Qnil;
       p++;
@@ -912,7 +912,7 @@ skip_chars (lisp chars, int dir)
     while (1)
       {
         Char c = point.ch ();
-        if (not == (bitisset (hi, c >> 8) && bitisset (lo[c >> 8], c & 255)))
+        if (not_char == (bitisset (hi, c >> 8) && bitisset (lo[c >> 8], c & 255)))
           break;
         if (!bp->forward_char (point, dir) || bp->eobp (point))
           return Qt;
@@ -948,10 +948,10 @@ skip_syntax_spec (lisp syntax_spec, int dir)
   if (p == pe)
     return Qnil;
 
-  int not = 0;
+  int not_char = 0;
   if (*p == '^')
     {
-      not = 1;
+      not_char = 1;
       if (p == pe)
         return Qnil;
       p++;
@@ -965,7 +965,7 @@ skip_syntax_spec (lisp syntax_spec, int dir)
       buf[syntax_spec_table[c]] = 1;
     }
 
-  if (not)
+  if (not_char)
     for (int i = 0; i < sizeof buf; i++)
       buf[i]--;
 
