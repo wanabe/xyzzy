@@ -554,8 +554,13 @@ process_proc ()
   return 1;
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 dpp (int argc, char **argv)
+#endif
 {
   if (argc != 3)
     {
