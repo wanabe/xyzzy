@@ -649,7 +649,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       RevokeDragDrop (hwnd);
 #endif
       app.user_timer.cleanup ();
-      environ::save_geometry ();
+      Environ::save_geometry ();
       app.clipboard.remove_listener (hwnd);
       PostQuitMessage (0);
       app.toplev = 0;
