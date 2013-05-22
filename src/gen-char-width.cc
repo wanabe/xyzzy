@@ -17,8 +17,13 @@ print (const u_char *width)
   printf ("};\n");
 }
 
+#ifdef __MINGW32__
+int
+main (int argc, char **argv)
+#else
 void
 gen_char_width (int argc, char **argv)
+#endif
 {
 #define ON8(X) (width[(X) / 8] = 255)
 #define ON(X) (width[(X) / 8] |= 1 << ((X) % 8))
