@@ -17,6 +17,10 @@
 
 #include "sockinet.h"
 
+#ifndef SP_PROT_SSL3TLS1_X_CLIENTS
+# define SP_PROT_SSL3TLS1_X_CLIENTS (SP_PROT_SSL3_CLIENT | 0x00000a80) // 0x00000a80 : SP_PROT_TLS1_X_CLIENT
+#endif
+
 template<int n>
 class safe_secbuf
 {
