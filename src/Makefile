@@ -2,7 +2,7 @@ CFLAGS = -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-
 GEN_DIR = gen
 GENS = $(addprefix $(GEN_DIR)/, chtab.cc msgcode.h vars-decl.h fns-decl.h\
          jisx0212-hash.h \ibmext.h utf2sjis.h iso2022state.h kanjitab.h\
-         num-arith.h symtable.cc)
+         num-arith.h symtable.cc char-width.h)
 
 all: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o alloc.o\
      appid.o arc-if.o archiver.o array.o assert.o backq.o bignum.o binfo.o\
@@ -52,3 +52,5 @@ $(GEN_DIR)/num-arith.h: dpp.exe num-arith.d
 	$(WINE) $< $(word 2, $^) $@
 $(GEN_DIR)/symtable.cc: gen-syms.exe
 	$(WINE) $< -symtable > $@
+$(GEN_DIR)/char-width.h: gen-char-width.exe
+	$(WINE) $< > $@
