@@ -14,6 +14,10 @@
 text_drop_target tdropt;
 #endif
 
+#ifndef WM_CLIPBOARDUPDATE
+# define WM_CLIPBOARDUPDATE 0x031D
+#endif
+
 main_frame g_frame;
 mouse_wheel g_wheel;
 
