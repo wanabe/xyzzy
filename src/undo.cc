@@ -53,7 +53,7 @@ public:
   point_t undo_point () const {return u_point;}
   static undo_status status () {return u_status;}
 
-  friend Buffer;
+  friend class Buffer;
   friend class SaveUndoStatus;
   friend void remove_undo_info (UndoInfo *);
 };
@@ -72,7 +72,7 @@ class UndoInsert: public UndoInfo
 public:
   UndoInsert (point_t point, int size) : UndoInfo (point), u_size (size) {}
   virtual int undo (Window *);
-  friend Buffer;
+  friend class Buffer;
 };
 
 static void
@@ -195,7 +195,7 @@ protected:
        : UndoInfo (point.p_point), u_size (size), u_buffer (0) {}
   virtual ~UndoRegion () {if (u_buffer) free (u_buffer);}
   virtual int undo (Window *) = 0;
-  friend Buffer;
+  friend class Buffer;
 };
 
 int
