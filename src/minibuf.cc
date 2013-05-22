@@ -82,7 +82,7 @@ count_prompt_columns (const Char *s, int l)
 
 lisp
 read_minibuffer (const Char *prompt, long prompt_length, lisp def,
-                 lisp type, lisp compl, lisp history,
+                 lisp type, lisp comp_l, lisp history,
                  int noselect, int completion, int must_match,
                  lisp title, int opt_arg)
 {
@@ -114,7 +114,7 @@ read_minibuffer (const Char *prompt, long prompt_length, lisp def,
   WindowConfiguration wc;
 
   protect_gc gcpro4 (type);
-  protect_gc gcpro5 (compl);
+  protect_gc gcpro5 (comp_l);
 
   bp->run_hook (Venter_minibuffer_hook, bp->lbp, history);
 
@@ -138,7 +138,7 @@ read_minibuffer (const Char *prompt, long prompt_length, lisp def,
   bp->b_fold_mode = bp->b_fold_columns = Buffer::FOLD_NONE;
   bp->fold_width_modified ();
   bp->lcomplete_type = type;
-  bp->lcomplete_list = compl;
+  bp->lcomplete_list = comp_l;
   bp->b_ime_mode = last_ime_mode;
   last_ime_mode = kbd_queue::IME_MODE_OFF;
 
@@ -225,10 +225,10 @@ read_minibuffer (const Char *prompt, long prompt_length, lisp def,
 
 lisp
 complete_read (const Char *prompt, long prompt_length, lisp def,
-               lisp type, lisp compl, lisp history,
+               lisp type, lisp comp_l, lisp history,
                int must_match, int opt_arg)
 {
-  lisp string = read_minibuffer (prompt, prompt_length, def, type, compl,
+  lisp string = read_minibuffer (prompt, prompt_length, def, type, comp_l,
                                  history, 0, 1, must_match, Qnil, opt_arg);
 
   if (!symbolp (type))
@@ -883,7 +883,7 @@ Fminibuffer_default (lisp buffer)
 }
 
 static lisp
-complete_read (lisp prompt, lisp def, lisp type, lisp compl,
+complete_read (lisp prompt, lisp def, lisp type, lisp comp_l,
                lisp history, int must_match, lisp keys)
 {
   check_string (prompt);
@@ -891,7 +891,7 @@ complete_read (lisp prompt, lisp def, lisp type, lisp compl,
   if (x != Qnil)
     history = x;
   return complete_read (xstring_contents (prompt), xstring_length (prompt),
-                        def, type, compl, history, must_match, -1);
+                        def, type, comp_l, history, must_match, -1);
 }
 
 lisp
@@ -1020,12 +1020,12 @@ Fread_exact_char_encoding (lisp prompt, lisp keys)
 }
 
 lisp
-Fcompleting_read (lisp prompt, lisp compl, lisp keys)
+Fcompleting_read (lisp prompt, lisp comp_l, lisp keys)
 {
   return complete_read (prompt,
                         find_keyword (Kdefault, keys),
                         find_keyword_bool (Kcase_fold, keys) ? Klist_ignore_case : Klist,
-                        compl, Qnil,
+                        comp_l, Qnil,
                         find_keyword_bool (Kmust_match, keys),
                         keys);
 }
