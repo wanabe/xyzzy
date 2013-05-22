@@ -6,6 +6,8 @@ all: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o alloc.o appid.o
 	$(CXX) $(CFLAGS) -c -o $@ $<
 gen-%.exe: gen-%.cc
 	$(CXX) $(CFLAGS) -o $@ $<
+dpp.exe: dpp.cc
+	$(CXX) $(CFLAGS) -o $@ $<
 
 chtab.cc: gen-ctab.exe
 	$(WINE) $< > $@
