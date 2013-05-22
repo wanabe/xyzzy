@@ -29,11 +29,11 @@ private:
   SecBuffer sb_buf[n];
   bool sb_release;
 
-  void set (int n, ULONG type, void *buf, int len)
+  void set (int m, ULONG type, void *buf, int len)
     {
-      sb_buf[n].BufferType = type;
-      sb_buf[n].pvBuffer = buf;
-      sb_buf[n].cbBuffer = len;
+      sb_buf[m].BufferType = type;
+      sb_buf[m].pvBuffer = buf;
+      sb_buf[m].cbBuffer = len;
     }
 
 public:
@@ -57,23 +57,23 @@ public:
   SecBuffer &operator [] (unsigned int i) {return sb_buf[i];}
   SecBufferDesc *desc () {return &sb_desc;}
 
-  void free (int n)
+  void free (int m)
     {
-      if (sb_buf[n].pvBuffer == nullptr) return;
-      FreeContextBuffer (sb_buf[n].pvBuffer);
-      sb_buf[n].pvBuffer = nullptr;
+      if (sb_buf[m].pvBuffer == nullptr) return;
+      FreeContextBuffer (sb_buf[m].pvBuffer);
+      sb_buf[m].pvBuffer = nullptr;
     }
 
-  void set_token (int n, void *buf, int len)
-    { set (n, SECBUFFER_TOKEN, buf, len); }
-  void set_data (int n, void *buf, int len)
-    { set (n, SECBUFFER_DATA, buf, len); }
-  void set_stream_header (int n, void *buf, int len)
-    { set (n, SECBUFFER_STREAM_HEADER, buf, len); }
-  void set_stream_trailer (int n, void *buf, int len)
-    { set (n, SECBUFFER_STREAM_TRAILER, buf, len); }
-  void set_empty (int n)
-    { set (n, SECBUFFER_EMPTY, nullptr, 0); }
+  void set_token (int m, void *buf, int len)
+    { set (m, SECBUFFER_TOKEN, buf, len); }
+  void set_data (int m, void *buf, int len)
+    { set (m, SECBUFFER_DATA, buf, len); }
+  void set_stream_header (int m, void *buf, int len)
+    { set (m, SECBUFFER_STREAM_HEADER, buf, len); }
+  void set_stream_trailer (int m, void *buf, int len)
+    { set (m, SECBUFFER_STREAM_TRAILER, buf, len); }
+  void set_empty (int m)
+    { set (m, SECBUFFER_EMPTY, nullptr, 0); }
 };
 
 class sockssl: public sockinet
