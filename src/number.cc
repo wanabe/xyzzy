@@ -1057,6 +1057,10 @@ Fscale_float (lisp flonum, lisp integer)
                      double_float_p (flonum));
 }
 
+#ifndef _DBL_RADIX
+# define _DBL_RADIX FLT_RADIX
+#endif
+
 lisp
 Ffloat_radix (lisp flonum)
 {
