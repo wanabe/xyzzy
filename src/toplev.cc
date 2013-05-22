@@ -727,12 +727,12 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       sysdep.load_settings ();
       g_frame.reload_settings ();
       {
-        RECT or, nr;
-        GetClientRect (app.hwnd_sw, &or);
+        RECT o_r, nr;
+        GetClientRect (app.hwnd_sw, &o_r);
         SendMessage (app.hwnd_sw, msg, wparam, lparam);
         GetClientRect (app.hwnd_sw, &nr);
         app.stat_area.reload_settings ();
-        if (or.bottom != nr.bottom)
+        if (o_r.bottom != nr.bottom)
           {
             GetWindowRect (hwnd, &nr);
 #if 1
