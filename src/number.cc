@@ -198,7 +198,7 @@ round (double x)
 static long
 truncate (long *r, long x, long y)
 {
-#ifdef _M_IX86
+#if defined(_M_IX86) && !defined(__GNUC__)
   __asm
     {
       mov ecx, r;
