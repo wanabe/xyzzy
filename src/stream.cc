@@ -1571,7 +1571,7 @@ listen_stream (lisp stream)
         case st_file_io:
         case st_file_input:
           {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
             if (xfile_stream_input (stream)->_cnt > 0)
               return 1;
 #else
