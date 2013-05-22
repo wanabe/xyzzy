@@ -1,16 +1,14 @@
 CFLAGS = -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-charset=cp932 -fexec-charset=cp932
 GEN_DIR = gen
-GENS = $(addprefix $(GEN_DIR)/, chtab.cc msgcode.h vars-decl.h fns-decl.h\
-         jisx0212-hash.h \ibmext.h utf2sjis.h iso2022state.h kanjitab.h\
-         num-arith.h symtable.cc char-width.h)
+depend = $1: $(addprefix $(GEN_DIR)/, $2)
 
-all: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o alloc.o\
-     appid.o arc-if.o archiver.o array.o assert.o backq.o bignum.o binfo.o\
-     buffer-bar.o byte-stream.o bytecode.o ces.o char.o chname.o chunk.o\
-     clipboard.o colors.o com.o conf.o ctl3d.o data.o dde.o debug.o dialogs.o\
-     disp.o dll.o doc.o dockbar.o dpp.o edict.o encdec.o encoding.o environ.o\
-     eval.o except.o fileio.o filer.o fnkey.o font.o gime.o glob.o guess.o\
-     guid.o gzip.o hash.o hashpjw.o init.o insdel.o ipc.o kanji.o kbd.o\
+all: $(GEN_DIR) Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
+     alloc.o appid.o arc-if.o archiver.o array.o assert.o backq.o bignum.o\
+     binfo.o buffer-bar.o byte-stream.o bytecode.o ces.o char.o chname.o\
+     chunk.o clipboard.o colors.o com.o conf.o ctl3d.o data.o dde.o debug.o\
+     dialogs.o disp.o dll.o doc.o dockbar.o dpp.o edict.o encdec.o encoding.o\
+     environ.o eval.o except.o fileio.o filer.o fnkey.o font.o gime.o glob.o\
+     guess.o guid.o gzip.o hash.o hashpjw.o init.o insdel.o ipc.o kanji.o kbd.o\
      keymap.o ldialog.o lex.o list.o listen.o lprint.o lread.o md5c.o menu.o\
      minibuf.o mman.o monitor.o mouse.o move.o msgbox.o number.o oledata.o\
      package.o pane.o pathname.o popup.o popupl.o pred.o preview.o print.o\
@@ -21,9 +19,18 @@ all: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o alloc.o\
      utils.o utimer.o vector.o version.o vfs.o wheel.o winhelp.o wstream.o\
      xdde.o xlist.o xpi.o
 
+$(call depend, gen-msg.exe, chtab.cc)
+$(call depend, Buffer.o, msgcode.h vars-decl.h fns-decl.h)
+$(call depend, disp.o, jisx0212-hash.h)
+$(call depend, encoding.o, ibmext.h utf2sjis.h)
+$(call depend, kanji.o, iso2022state.h kanjitab.h)
+$(call depend, number.o, num-arith.h)
+$(call depend, symtable.o, symtable.cc)
+$(call depend, ucs2.o, char-width.h)
+
 $(GEN_DIR):
 	mkdir $@
-%.o: %.cc $(GEN_DIR) $(GENS)
+%.o: %.cc
 	$(CXX) $(CFLAGS) -c -o $@ $<
 gen-%.exe: gen-%.cc
 	$(CXX) $(CFLAGS) -o $@ $<
