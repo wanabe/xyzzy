@@ -27,6 +27,7 @@ $(call depend, kanji.o, iso2022state.h kanjitab.h)
 $(call depend, number.o, num-arith.h)
 $(call depend, symtable.o, symtable.cc)
 $(call depend, ucs2.o, char-width.h)
+$(call depend, version.o, version-describe.h)
 
 $(GEN_DIR):
 	mkdir $@
@@ -61,3 +62,5 @@ $(GEN_DIR)/symtable.cc: gen-syms.exe
 	$(WINE) $< -symtable > $@
 $(GEN_DIR)/char-width.h: gen-char-width.exe
 	$(WINE) $< > $@
+$(GEN_DIR)/version-describe.h:
+	../misc/update_version_describe.sh
