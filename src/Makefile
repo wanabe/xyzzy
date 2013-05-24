@@ -2,7 +2,8 @@ CFLAGS = -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-
 GEN_DIR = gen
 depend = $1: $(addprefix $(GEN_DIR)/, $2)
 
-all: $(GEN_DIR) Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
+all: $(GEN_DIR) xyzzy.exe
+xyzzy.exe: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
      alloc.o appid.o arc-if.o archiver.o array.o assert.o backq.o bignum.o\
      binfo.o buffer-bar.o byte-stream.o bytecode.o ces.o char.o chname.o\
      chunk.o clipboard.o colors.o com.o conf.o ctl3d.o data.o dde.o debug.o\
@@ -17,7 +18,9 @@ all: $(GEN_DIR) Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
      stdctl.o stream.o string.o structure.o symbol.o symtable.o syntax.o\
      sysdep.o system.o thread.o toplev.o ucs2.o undo.o usertab.o usertool.o\
      utils.o utimer.o vector.o version.o vfs.o wheel.o winhelp.o wstream.o\
-     xdde.o xlist.o xpi.o
+     xdde.o xlist.o xpi.o $(GEN_DIR)/chtab.o $(GEN_DIR)/msgdef.o\
+     $(GEN_DIR)/dumpver.o
+	$(CXX) $(CFLAGS) -o $@ $^ -lole32 -lcomdlg32 -lcomctl32 -luuid -lgdi32
 
 $(call depend, gen-msg.exe, chtab.cc)
 $(call depend, Buffer.o, msgcode.h vars-decl.h fns-decl.h)
@@ -62,5 +65,9 @@ $(GEN_DIR)/symtable.cc: gen-syms.exe
 	$(WINE) $< -symtable > $@
 $(GEN_DIR)/char-width.h: gen-char-width.exe
 	$(WINE) $< > $@
+$(GEN_DIR)/msgdef.cc: gen-msg.exe
+	$(WINE) $< -c > $@
+$(GEN_DIR)/dumpver.cc: gen-syms.exe
+	$(WINE) $< -version > $@
 $(GEN_DIR)/version-describe.h:
 	../misc/update_version_describe.sh
