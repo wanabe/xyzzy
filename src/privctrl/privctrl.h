@@ -5,6 +5,13 @@
 extern "C" {
 # endif
 
+#ifndef min
+# define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+# define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
 # ifndef PRIVCTRLAPI
 #  ifndef PRIVCTRL_NODLL
 #   define PRIVCTRLAPI DECLSPEC_IMPORT WINAPI
