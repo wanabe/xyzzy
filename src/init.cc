@@ -801,8 +801,8 @@ init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
 
   Ctl3d::enable (hinst);
 
-  _set_new_handler (handle_new_failure);
-  _set_se_translator (se_handler);
+  /*****TODO****_set_new_handler (handle_new_failure);
+  ****TODO**** _set_se_translator (se_handler);*/
 
   if (!pre_allocate_stack ())
     {
@@ -981,7 +981,7 @@ WinMain (HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 
       if (!terminate_normally)
         {
-          _set_se_translator (0);
+          /*****TODO***** _set_se_translator (0);*/
           cleanup_exception ();
         }
 

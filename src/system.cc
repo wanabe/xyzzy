@@ -82,7 +82,7 @@ Fsi_search_path (lisp lfile, lisp lpath, lisp lext)
 lisp
 Fadmin_user_p ()
 {
-  if (IsUserAnAdmin ())
+  if (1) // *****TODO***** IsUserAnAdmin ())
     return Qt;
   else
     return Qnil;
