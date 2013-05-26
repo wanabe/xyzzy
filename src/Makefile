@@ -2,8 +2,8 @@ CFLAGS = -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-
 GEN_DIR = gen
 depend = $1: $(addprefix $(GEN_DIR)/, $2)
 
-all: $(GEN_DIR) xyzzy.exe
-xyzzy.exe: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
+all: $(GEN_DIR) ../xyzzy.exe
+../xyzzy.exe: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
      alloc.o appid.o arc-if.o archiver.o array.o assert.o backq.o bignum.o\
      binfo.o buffer-bar.o byte-stream.o bytecode.o ces.o char.o chname.o\
      chunk.o clipboard.o colors.o com.o conf.o ctl3d.o data.o dde.o debug.o\
