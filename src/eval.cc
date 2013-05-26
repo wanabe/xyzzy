@@ -489,13 +489,35 @@ funcall_builtin (lisp f, lisp arglist)
     }
 
   if (need_rest_p (f))
-    *stack = consp (arglist) ? arglist : Qnil;
+    *stack++ = consp (arglist) ? arglist : Qnil;
   else if (consp (arglist))
     FEtoo_many_arguments ();
 
 #ifdef DEBUG_GC
   MARK_FUNCALL (f);
 #endif
+# ifdef __MINGW32__
+  switch (nargs)
+    {
+    case 0:
+      return lfunction_proc_0 (xfunction_fn (f))();
+    case 1:
+      return lfunction_proc_1 (xfunction_fn (f))(stack[-1]);
+    case 2:
+      return lfunction_proc_2 (xfunction_fn (f))(stack[-2], stack[-1]);
+    case 3:
+      return lfunction_proc_3 (xfunction_fn (f))(stack[-3], stack[-2], stack[-1]);
+    case 4:
+      return lfunction_proc_4 (xfunction_fn (f))(stack[-4], stack[-3], stack[-2], stack[-1]);
+    case 5:
+      return lfunction_proc_5 (xfunction_fn (f))(stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
+    case 6:
+      return lfunction_proc_6 (xfunction_fn (f))(stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
+    case 7:
+      return lfunction_proc_7 (xfunction_fn (f))(stack[-7], stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
+    }
+  FEtoo_many_arguments ();
+# endif
   return lfunction_proc_0 (xfunction_fn (f))();
 #else
 # error "Not tested"
