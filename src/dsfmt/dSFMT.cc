@@ -11,7 +11,7 @@
  *
  * The new BSD License is applied to this software, see LICENSE.txt
  */
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "../cdecl.h"
 
 #include "dSFMT-params.h"

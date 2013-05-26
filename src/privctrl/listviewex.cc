@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "privctlimpl.h"
 #include "mousemsg.h"
 
