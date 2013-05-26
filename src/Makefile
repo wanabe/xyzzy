@@ -19,7 +19,8 @@ xyzzy.exe: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
      sysdep.o system.o thread.o toplev.o ucs2.o undo.o usertab.o usertool.o\
      utils.o utimer.o vector.o version.o vfs.o wheel.o winhelp.o wstream.o\
      xdde.o xlist.o xpi.o $(GEN_DIR)/chtab.o $(GEN_DIR)/msgdef.o\
-     $(GEN_DIR)/dumpver.o
+     $(GEN_DIR)/dumpver.o dsfmt/dSFMT.o privctrl/privctrl.o privctrl/url.o\
+     privctrl/listviewex.o
 	$(CXX) $(CFLAGS) -o $@ $^ -lole32 -lcomdlg32 -lcomctl32 -luuid -lgdi32
 
 $(call depend, gen-msg.exe, chtab.cc)
