@@ -21,7 +21,7 @@ xyzzy.exe: Buffer.o ChooseFont.o ColorDialog.o DnD.o StrBuf.o Window.o\
      xdde.o xlist.o xpi.o $(GEN_DIR)/chtab.o $(GEN_DIR)/msgdef.o\
      $(GEN_DIR)/dumpver.o dsfmt/dSFMT.o privctrl/privctrl.o privctrl/url.o\
      privctrl/listviewex.o
-	$(CXX) $(CFLAGS) -o $@ $^ -lole32 -lcomdlg32 -lcomctl32 -luuid -lgdi32
+	$(CXX) $(CFLAGS) -Lzlib -o $@ $^ -static-libgcc -static-libstdc++ -loleaut32 -lole32 -lcomdlg32 -lcomctl32 -luuid -lgdi32 -limm32 -lz -lmpr -lwinspool -lsecur32 -lcrypt32 -lrpcrt4
 
 $(call depend, gen-msg.exe, chtab.cc)
 $(call depend, Buffer.o, msgcode.h vars-decl.h fns-decl.h)
