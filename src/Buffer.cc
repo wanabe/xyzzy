@@ -718,7 +718,7 @@ Buffer::buffer_name (char *b, char *be) const
   if (b >= be - 1 || b_version == 1)
     return b;
   char t[64];
-  sprintf (t, "<%d>", b_version);
+  sprintf (t, "<%ld>", b_version);
   return stpncpy (b, t, be - b);
 }
 
@@ -729,7 +729,7 @@ Buffer::quoted_buffer_name (char *b, char *be, int qc, int qe) const
   if (b >= be - 1 || b_version == 1)
     return b;
   char t[64];
-  sprintf (t, "<%d>", b_version);
+  sprintf (t, "<%ld>", b_version);
   return stpncpy (b, t, be - b);
 }
 
@@ -939,7 +939,7 @@ Fbuffer_name (lisp buffer)
   Char buf[BUFFER_NAME_MAX * 2];
   bcopy (xstring_contents (bp->lbuffer_name), buf, xstring_length (bp->lbuffer_name));
   char v[64];
-  sprintf (v, "<%d>", bp->b_version);
+  sprintf (v, "<%ld>", bp->b_version);
   Char *be = s2w (buf + xstring_length (bp->lbuffer_name), v);
   return make_string (buf, be - buf);
 }
