@@ -628,7 +628,7 @@ filer_drop_target::make_drop_file (const char *path, const char *base_path,
   if (!link && sub_directory_p (target, name))
     return 0;
   DWORD a = WINFS::GetFileAttributes (name);
-  if (a == -1)
+  if (a == DWORD (-1))
     return 0;
   if (a & FILE_ATTRIBUTE_DIRECTORY)
     {
