@@ -748,7 +748,6 @@ Window::paint_window (HDC hdc) const
 inline COLORREF
 Window::glyph_forecolor (glyph_t c) const
 {
-  u_int y = c & ((GLYPH_TEXTPROP_NCOLORS - 1) << GLYPH_TEXTPROP_FG_SHIFT_BITS);
   return (c & GLYPH_TEXTPROP_FG_BIT
           ? w_textprop_forecolor[(c & ((GLYPH_TEXTPROP_NCOLORS - 1)
                                        << GLYPH_TEXTPROP_FG_SHIFT_BITS))
