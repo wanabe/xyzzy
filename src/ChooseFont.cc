@@ -65,7 +65,7 @@ ChooseFontP::enum_font_size_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, L
           static const int tt[] =
             {6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 36,};
           if (SendMessage (hwnd, LB_FINDSTRINGEXACT, WPARAM (-1), LPARAM ("  6")) == LB_ERR)
-            for (int i = 0; i < numberof (tt); i++)
+            for (u_int i = 0; i < numberof (tt); i++)
               {
                 sprintf (b, "%3d", tt[i]);
                 SendMessage (hwnd, LB_ADDSTRING, 0, LPARAM (b));
@@ -330,7 +330,7 @@ ChooseFontP::draw_sample (HWND hwnd, DRAWITEMSTRUCT *dis)
     {
       BYTE charset = BYTE (SendDlgItemMessage (hwnd, IDC_NAMELIST,
                                                LB_GETITEMDATA, i, 0) >> 8);
-      for (int i = 0; i < numberof (samples); i++)
+      for (u_int i = 0; i < numberof (samples); i++)
         if (charset == samples[i].charset)
           {
             sample = samples[i].string;
