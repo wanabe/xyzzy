@@ -534,8 +534,6 @@ filer_drop_target::target_path (char *buf, const POINTL &pt)
     }
 }
 
-static UINT CF_SHELLIDLIST = RegisterClipboardFormat (CFSTR_SHELLIDLIST);
-
 class safe_STGMEDIUM
 {
   STGMEDIUM *medium;
