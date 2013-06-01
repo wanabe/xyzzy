@@ -312,10 +312,10 @@ StatusWindow::paint (const DRAWITEMSTRUCT *dis)
        b < be; b++)
     {
       SIZE sz;
-      GetTextExtentPoint32W (dis->hDC, b, 1, &sz);
+      GetTextExtentPoint32W (dis->hDC, reinterpret_cast <const wchar_t*> (b), 1, &sz);
       r.right += sz.cx;
       ExtTextOutW (dis->hDC, x, y, ETO_CLIPPED | ETO_OPAQUE,
-                   &r, b, 1, 0);
+                   &r, reinterpret_cast <const wchar_t*> (b), 1, 0);
       r.left = r.right;
       x += sz.cx;
     }
