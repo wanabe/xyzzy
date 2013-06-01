@@ -5,6 +5,11 @@
 #include "filer.h"
 #include "buffer-bar.h"
 
+#ifdef __MINGW32__
+# undef ListView_GetItemRect
+# define ListView_GetItemRect(hwnd,i,prc,code) ::SendMessage((hwnd), LVM_GETITEMRECT, (WPARAM)(i), (((prc)->left = code), (LPARAM)(prc)))
+#endif
+
 HRESULT
 ole_object::QueryInterface (IUnknown *self, REFIID siid, REFIID reqiid, void **v)
 {
