@@ -10,7 +10,7 @@ init_syntax_spec ()
   memset (syntax_spec_table, -1, sizeof syntax_spec_table);
   const char *p = " .()$\"<>/\\'_wkjx{}@";
   for (int i = 0; *p; i++, p++)
-    syntax_spec_table[*p] = i;
+    syntax_spec_table[static_cast <u_char> (*p)] = i;
 }
 
 lisp
@@ -526,7 +526,7 @@ word_state::char_category (const syntax_table *tab, Char c)
   if (DBCP (c))
     {
       ucs2_t wc = i2w (c);
-      for (int i = 0; i < numberof (ws_range); i++)
+      for (u_int i = 0; i < numberof (ws_range); i++)
         {
           if (wc < ws_range[i].from)
             return WC2symbol;
@@ -3621,8 +3621,9 @@ Fparse_point_syntax (lisp lpoint)
       break;
 
     default:
-      return Qnil;
+      break;
     }
+    return Qnil;
 }
 
 

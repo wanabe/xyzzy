@@ -36,6 +36,7 @@
 
 #define 	__CAST(dt, st)   ((dt)(st))
 
+#if 0
 static void
 be16enc(void *buf, uint16_t u)
 {
@@ -69,6 +70,7 @@ le16dec(const void *buf)
 
 	return __CAST(uint16_t, ((p[1] << 8) | p[0]));
 }
+#endif
 
 static void
 be32enc(void *buf, uint32_t u)
@@ -81,6 +83,7 @@ be32enc(void *buf, uint32_t u)
 	p[3] = __CAST(uint8_t, (u & 0xff));
 }
 
+#if 0
 static void
 le32enc(void *buf, uint32_t u)
 {
@@ -107,6 +110,7 @@ le32dec(const void *buf)
 
 	return ((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0]);
 }
+#endif
 
 static void
 be64enc(void *buf, uint64_t u)
@@ -117,6 +121,7 @@ be64enc(void *buf, uint64_t u)
 	be32enc(p + 4, __CAST(uint32_t, (u & 0xffffffffULL)));
 }
 
+#if 0
 static void
 le64enc(void *buf, uint64_t u)
 {
@@ -141,5 +146,6 @@ le64dec(const void *buf)
 
 	return (le32dec(p) | (__CAST(uint64_t, le32dec(p + 4)) << 32));
 }
+#endif
 
 #endif /* !_endian_h_ */

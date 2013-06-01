@@ -319,13 +319,13 @@ ccs_big5_p (Char c)
 static inline int
 big5_lead_p (int c)
 {
-  return c >= 0xa1 && c <= 0xc7 || c >= 0xc9 && c <= 0xf9;
+  return (c >= 0xa1 && c <= 0xc7) || (c >= 0xc9 && c <= 0xf9);
 }
 
 static inline int
 big5_trail_p (int c)
 {
-  return c >= 0x40 && c <= 0x7e || c >= 0xa1 && c <= 0xfe;
+  return (c >= 0x40 && c <= 0x7e) || (c >= 0xa1 && c <= 0xfe);
 }
 
 static inline Char

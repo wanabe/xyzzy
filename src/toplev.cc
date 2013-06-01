@@ -136,7 +136,7 @@ start_quit_thread ()
 {
   u_long h = _beginthreadex (0, 0, quit_thread_entry, (void *)GetCurrentThreadId (),
                              0, &app.quit_thread_id);
-  if (h == -1)
+  if (h == u_long (-1))
     return 0;
   CloseHandle (HANDLE (h));
   return 1;

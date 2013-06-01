@@ -8,6 +8,9 @@
 #include "ctxmenu.h"
 #include "com.h"
 
+#undef ListView_GetItemRect
+#define ListView_GetItemRect(hwnd,i,prc,code) ::SendMessage((hwnd), LVM_GETITEMRECT, (WPARAM)(i), (((prc)->left = code), (LPARAM)(prc)))
+
 #ifndef SHGFI_OVERLAYINDEX
 #define SHGFI_OVERLAYINDEX 0x000000040
 #endif
@@ -30,9 +33,9 @@ FilerView::cleanup_chunk ()
 }
 
 FilerView::FilerView (lisp dir, lisp last_path)
-     : fv_chunk (0), fv_hwnd (0), fv_hwnd_mask (0), fv_hwnd_path (0),
-       fv_hwnd_marks (0), fv_gcpro (fv_lobjs, numberof (fv_lobjs)),
-       fv_subscribed (0), fv_marks_changed (0), fv_sort (0), fv_parent (0),
+     : fv_hwnd (0), fv_hwnd_mask (0), fv_hwnd_path (0), fv_hwnd_marks (0),
+       fv_gcpro (fv_lobjs, numberof (fv_lobjs)),fv_chunk (0), fv_sort (0),
+       fv_parent (0), fv_subscribed (0), fv_marks_changed (0), 
        fv_hevent (0), fv_hthread (0),
        fv_stop_thread (0), fv_sequence (0), fv_icon_path (0)
 {
@@ -417,7 +420,7 @@ FilerView::init_view (HWND hwnd, HWND hwnd_mask, HWND hwnd_marks,
       HIMAGELIST hil = ImageList_LoadBitmap (app.hinst,
                                              MAKEINTRESOURCE (IDB_FILESEL),
                                              16, 1, RGB (0, 0, 255));
-      ListView_SetImageList (fv_hwnd, hil, LVSIL_SMALL);
+      (void)ListView_SetImageList (fv_hwnd, hil, LVSIL_SMALL);
     }
   else
     {
@@ -429,11 +432,11 @@ FilerView::init_view (HWND hwnd, HWND hwnd_mask, HWND hwnd_marks,
       fv_regular_file_index = fi.iIcon;
       if (SHGetFileInfo ("", FILE_ATTRIBUTE_DIRECTORY, &fi, sizeof fi, flags))
         fv_directory_index = fi.iIcon;
-      ListView_SetImageList (fv_hwnd, hil, LVSIL_SMALL);
+      (void)ListView_SetImageList (fv_hwnd, hil, LVSIL_SMALL);
       hil = ImageList_LoadBitmap (app.hinst,
                                   MAKEINTRESOURCE (IDB_FILESEL),
                                   16, 1, RGB (0, 0, 255));
-      ListView_SetSubImageList (fv_hwnd, hil, 0);
+      (void)ListView_SetSubImageList (fv_hwnd, hil, 0);
     }
 
   DWORD style = GetWindowLong (fv_hwnd, GWL_STYLE);
@@ -465,6 +468,7 @@ FilerView::save_column () const
     }
 }
 
+#if 0
 static int
 check_share_folder (const char *path)
 {
@@ -487,6 +491,7 @@ check_share_folder (const char *path)
 
   return attr & SFGAO_SHARE;
 }
+#endif
 
 void
 FilerView::dispinfo (LV_ITEM *lv)
@@ -495,7 +500,7 @@ FilerView::dispinfo (LV_ITEM *lv)
   switch (lv->iSubItem)
     {
     case 0:
-      lv->pszText = *d->name ? d->name : "..";
+      lv->pszText = *d->name ? d->name : const_cast <char *> ("..");
       if (lv->mask & LVIF_IMAGE)
         {
           int image;
@@ -538,7 +543,7 @@ FilerView::dispinfo (LV_ITEM *lv)
           lv->pszText = fv_buf;
         }
       else
-        lv->pszText = "";
+        lv->pszText = const_cast <char *> ("");
       break;
 
     case 2:
@@ -881,7 +886,7 @@ FilerView::disk_space (double nbytes, char *buf, int c)
 {
 
   const char *const u[] = {"B", "KB", "MB", "GB", "TB"};
-  int i;
+  size_t i;
   for (i = 0; i < numberof (u) - 1 && c != *u[i] && nbytes >= 1024.0;
        i++, nbytes /= 1024.0)
     ;
@@ -1455,10 +1460,10 @@ int Filer::f_mlactive;
 
 Filer::Filer (lisp dir, lisp sdir, lisp name, lisp last_path,
               lisp multi, lisp title, lisp dual, lisp left, int auto_delete)
-     : f_multi (multi != Qnil),
-       f_gcpro (f_lobjs, numberof (f_lobjs)), f_fdispatch (0),
+     : IdleDialog (auto_delete), f_gcpro (f_lobjs, numberof (f_lobjs)),
+       f_multi (multi != Qnil), f_fdispatch (0),
        f_fv1 (dir, last_path), f_fv2 (sdir, last_path), f_viewer_on (0),
-       f_changed_view (0), IdleDialog (auto_delete), f_idle_timer (0),
+       f_changed_view (0), f_idle_timer (0),
        f_ctx_menu2 (0)
 {
   chain ();

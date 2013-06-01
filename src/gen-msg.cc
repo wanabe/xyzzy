@@ -64,13 +64,13 @@ gen_msg (int argc, char **argv)
     exit (2);
   if (!strcmp (argv[1], "-def"))
     {
-      for (int i = 0; i < numberof (msg); i++)
+      for (u_int i = 0; i < numberof (msg); i++)
         printf ("#define %s %d\n", msg[i].ident, i);
     }
   else if (!strcmp (argv[1], "-enum"))
     {
       printf ("#ifndef _msgcode_h_\n# define _msgcode_h_\nenum message_code\n{\n");
-      int i;
+      u_int i;
       for (i = 0; i < numberof (msg) - 1; i++)
         printf ("  %s,\n", msg[i].ident);
       printf ("  %s\n", msg[i].ident);
@@ -79,7 +79,7 @@ gen_msg (int argc, char **argv)
   else if (!strcmp (argv[1], "-c"))
     {
       printf ("const char SSM[] =\n");
-      for (int i = 0; i < numberof (msg); i++)
+      for (u_int i = 0; i < numberof (msg); i++)
         {
           printf ("  \"");
           print_quote (msg[i].text);
@@ -91,7 +91,7 @@ gen_msg (int argc, char **argv)
       printf ("static const char *const message_string[] =\n");
       printf ("{\n");
       int l = 0;
-      for (int i = 0; i < numberof (msg); i++)
+      for (u_int i = 0; i < numberof (msg); i++)
         {
           printf ("  SSM + %d,\n", l);
           l += strlen (msg[i].text) + 1;
@@ -106,7 +106,7 @@ gen_msg (int argc, char **argv)
     {
       printf ("STRINGTABLE DISCARDABLE\n");
       printf ("BEGIN\n");
-      for (int i = 0; i < numberof (msg); i++)
+      for (u_int i = 0; i < numberof (msg); i++)
         {
           printf ("  %d \"", i + 1024);
           print_quote_rc (msg[i].text);

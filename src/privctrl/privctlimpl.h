@@ -16,7 +16,7 @@ EXTERN HINSTANCE hinstDLL;
 
 EXTERN ATOM hprop;
 EXTERN ATOM hownerdraw;
-#define ATOM2STR(a) LPSTR (a)
+#define ATOM2STR(a) reinterpret_cast <LPSTR> (a)
 
 EXTERN int Win4p;
 
@@ -72,7 +72,7 @@ get_owner_draw_proc (HWND hwnd)
 inline BOOL
 set_owner_draw_proc (HWND hwnd, OWNERDRAWPROC proc)
 {
-  return SetProp (hwnd, ATOM2STR (hownerdraw), proc);
+  return SetProp (hwnd, ATOM2STR (hownerdraw), reinterpret_cast <HANDLE> (proc));
 }
 
 item_data *alloc_item_data (HWND, DWORD);

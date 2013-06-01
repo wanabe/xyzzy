@@ -130,7 +130,7 @@ read_minibuffer (const Char *prompt, long prompt_length, lisp def,
           && n == 4)
         strcpy (bp->b_prompt_arg, "C-u ");
       else if (safe_fixnum_value (xsymbol_value (Vprefix_value), &n))
-        sprintf (bp->b_prompt_arg, "%d ", n);
+        sprintf (bp->b_prompt_arg, "%ld ", n);
     }
   bp->b_prompt_columns += strlen (bp->b_prompt_arg);
 

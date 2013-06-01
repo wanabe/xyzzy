@@ -259,6 +259,7 @@ static guess_arc guess_utf8_ar[] = {
  {  4, 1.0   }, /* 5byte_more -> 4byte_more */
 };
 
+#if 0
 static signed char guess_ucs2le_st[][256] = {
  { /* state init */
   2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
@@ -426,6 +427,7 @@ static guess_arc guess_ucs2be_ar[] = {
  {  0, 1.0   }, /* ascii -> init */
  {  0, 1.0   }, /* multi -> init */
 };
+#endif
 
 static signed char guess_big5_st[][256] = {
  { /* state init */
@@ -472,6 +474,7 @@ static guess_arc guess_big5_ar[] = {
  {  0, 1.0   }, /* 2byte -> init */
 };
 
+#if 0
 static signed char guess_gb2312_st[][256] = {
  { /* state init */
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -729,4 +732,4 @@ static guess_arc guess_johab_ar[] = {
  {  0, 1.0   }, /* jamo51 -> init */
  {  0, 1.0   }, /* jamo42 -> init */
 };
-
+#endif

@@ -1470,7 +1470,7 @@ get_reader_dispmacro_function (lisp fn)
       {number_minus_reader, &Ssi_number_minus_reader},
       {number_bar_reader, &Ssi_number_bar_reader},
     };
-  for (int i = 0; i < numberof (x); i++)
+  for (u_int i = 0; i < numberof (x); i++)
     if (fn == *x[i].s)
       return x[i].f;
   return 0;
@@ -1490,7 +1490,7 @@ get_reader_macro_function (lisp fn)
       {backquote_reader, &Ssi_backquote_reader},
       {dispmacro_reader, &Ssi_dispmacro_reader},
     };
-  for (int i = 0; i < numberof (x); i++)
+  for (u_int i = 0; i < numberof (x); i++)
     if (fn == *x[i].s)
       return x[i].f;
   return 0;

@@ -6,10 +6,11 @@
 #include "environ.h"
 
 kbd_queue::kbd_queue ()
-     : head (0), tail (0), pending (lChar_EOF), last_ime_status (-1),
-       current_mode (im_normal), kbd_macro (0), delayed_activate (0), in_hook (0),
-       last_command_key_index (0), command_key_keeped (0), st_timeout (-1),
-       reconv (0), putc_pending (-1), ime_prop (0), unicode_kbd (0), gc_timer (0)
+     : head (0), tail (0), pending (lChar_EOF), kbd_macro (0),
+       last_ime_status (-1), delayed_activate (0), in_hook (0), putc_pending (-1),
+       current_mode (im_normal), last_command_key_index (0),
+       command_key_keeped (0), st_timeout (-1),
+       reconv (0), unicode_kbd (0), ime_prop (0), gc_timer (0)
 {
   GetKeyboardLayout =
     (GETKEYBOARDLAYOUT)GetProcAddress (GetModuleHandle ("USER32"),
@@ -473,7 +474,7 @@ exkey_index (UINT c, int syskey)
   if (c == VK_HANKAKU)
     c = VK_ZENKAKU;
 
-  for (int i = 0; i < numberof (exkey); i++)
+  for (UINT i = 0; i < numberof (exkey); i++)
     if (c == exkey[i])
       return i;
   return -1;
@@ -901,7 +902,7 @@ kbd_queue::documentfeed (RECONVERTSTRING *rsbuf, int unicode_p)
   try
     {
       suppress_gc sgc;
-      lisp r = Ffuncall (hook, Qnil);
+      Ffuncall (hook, Qnil);
       int n = multiple_value::count ();
       multiple_value::clear ();
       if (n != 2)
@@ -1072,6 +1073,17 @@ kbd_queue::kbd_encoding_font ()
         case ENCODING_LANG_CN:
           return app.text_font.font (FONT_CN_TRADITIONAL);
         }
+      break;
+
+    case encoding_auto_detect:
+    case encoding_iso2022:
+    case encoding_iso8859:
+    case encoding_utf7:
+    case encoding_utf8:
+    case encoding_utf16:
+    case encoding_binary:
+    case encoding_utf5:
+      break;
     }
   return app.text_font.font (FONT_LATIN);
 }
@@ -1414,7 +1426,7 @@ static int
 get_kbd_layout_name (HKL hkl, char *buf, int size)
 {
   char k[256];
-  sprintf (k, "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%08x", hkl);
+  sprintf (k, "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%08x", reinterpret_cast <u_int> (hkl));
   ReadRegistry r (HKEY_LOCAL_MACHINE, k);
   return ((!r.fail () && r.get ("Layout Text", buf, size) > 0)
           || app.kbdq.gime.ImmGetDescription (hkl, buf, size) > 0);
@@ -1443,7 +1455,7 @@ Flist_kbd_layout ()
     {
       char buf[256];
       if (get_kbd_layout_name (h[i], buf, sizeof buf)
-          || get_kbd_layout_name (HKL (HIWORD (h[i])), buf, sizeof buf))
+          || get_kbd_layout_name (reinterpret_cast <HKL> (HIWORD (h[i])), buf, sizeof buf))
         r = xcons (xcons (make_fixnum (int (h[i])),
                           make_string (buf)),
                    r);
@@ -1476,7 +1488,7 @@ Fselect_kbd_layout (lisp layout)
         {
           char buf[256];
           if ((get_kbd_layout_name (h[i], buf, sizeof buf)
-               || get_kbd_layout_name (HKL (LOWORD (h[i])), buf, sizeof buf))
+               || get_kbd_layout_name (reinterpret_cast <HKL> (LOWORD (h[i])), buf, sizeof buf))
               && !strcmp (buf, name))
             {
               hkl = h[i];
@@ -1507,7 +1519,7 @@ Fcurrent_kbd_layout ()
   HKL hkl = app.kbdq.get_kbd_layout ();
   char buf[256];
   if (get_kbd_layout_name (hkl, buf, sizeof buf)
-      || get_kbd_layout_name (HKL (HIWORD (hkl)), buf, sizeof buf))
+      || get_kbd_layout_name (reinterpret_cast <HKL> (HIWORD (hkl)), buf, sizeof buf))
     return xcons (make_fixnum (int (hkl)), make_string (buf));
   return xcons (make_fixnum (int (hkl)), Qnil);
 }

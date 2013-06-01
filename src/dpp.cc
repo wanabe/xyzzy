@@ -38,7 +38,7 @@ const char typechar[] = "slbrFDc";
 #define AT_REAL LFLOAT_D
 #define AT_NUMBER LCOMPLEX
 
-struct
+struct TypeSpec
 {
   const char *ltype;
   const char *fmt;
@@ -73,7 +73,7 @@ error (const char *fmt, ...)
 static void
 output_line (long ln)
 {
-  fprintf (fo, "//#line %d \"%s\"\n", ln, input_file);
+  fprintf (fo, "//#line %ld \"%s\"\n", ln, input_file);
 }
 
 static void
@@ -238,7 +238,7 @@ lookup_typechar (int c)
 int
 lookup_typechar (const char *s, int nargs)
 {
-  if (strlen (s) != nargs)
+  if (strlen (s) != static_cast <u_int> (nargs))
     error ("type char expected");
   if (nargs == 1)
     return lookup_typechar (*s);

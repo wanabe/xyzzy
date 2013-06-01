@@ -767,6 +767,9 @@ init_environ ()
     case Sysdep::PROCESSTYPE_WOW64:
       xsymbol_value (Vfeatures) = xcons (Kwow64, xsymbol_value (Vfeatures));
       break;
+    case Sysdep::PROCESSTYPE_UNKNOWN:
+    case Sysdep::PROCESSTYPE_NATIVE:
+      break;
     }
 }
 

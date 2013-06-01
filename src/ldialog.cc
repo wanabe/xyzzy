@@ -787,7 +787,7 @@ Dialog::spin_init (dlgctrl *c, lisp init)
           if (hwnd)
             {
               char b[32];
-              sprintf (b, "%d", val);
+              sprintf (b, "%ld", val);
               SetWindowText (hwnd, b);
             }
         }
@@ -1310,14 +1310,14 @@ PropSheetFont::find_font (const DLGTEMPLATE *tmpl)
   if (!(tmpl->style & DS_SETFONT))
     return;
   const WORD *w = (const WORD *)(tmpl + 1);
-  w += *w == 0xffff ? 2 : 1 + wcslen (w);
-  w += *w == 0xffff ? 2 : 1 + wcslen (w);
-  w += 1 + wcslen (w);
+  w += *w == 0xffff ? 2 : 1 + wcslen (reinterpret_cast <const wchar_t *> (w));
+  w += *w == 0xffff ? 2 : 1 + wcslen (reinterpret_cast <const wchar_t *> (w));
+  w += 1 + wcslen (reinterpret_cast <const wchar_t *> (w));
   point = short (*w++);
-  int l = wcslen (w);
+  int l = wcslen (reinterpret_cast <const wchar_t *> (w));
   if (l < LF_FACESIZE)
     {
-      wcscpy (face, w);
+      wcscpy (face, reinterpret_cast <const wchar_t *> (w));
       face_len = l;
     }
 }
@@ -1363,13 +1363,13 @@ PropSheetFont::change_font (const DLGTEMPLATE *rtmpl, DWORD size)
   WORD *w = (WORD *)(tmpl + 1);
   const WORD *r0 = (const WORD *)(rtmpl + 1);
   const WORD *r = r0;
-  r += *r == 0xffff ? 2 : 1 + wcslen (r);
-  r += *r == 0xffff ? 2 : 1 + wcslen (r);
-  r += 1 + wcslen (r);
+  r += *r == 0xffff ? 2 : 1 + wcslen (reinterpret_cast <const wchar_t *> (r));
+  r += *r == 0xffff ? 2 : 1 + wcslen (reinterpret_cast <const wchar_t *> (r));
+  r += 1 + wcslen (reinterpret_cast <const wchar_t *> (r));
   memcpy (w, r0, sizeof (WORD) * (r - r0));
   w += r - r0;
   if (rtmpl->style & DS_SETFONT)
-    r += 2 + wcslen (r + 1);
+    r += 2 + wcslen (reinterpret_cast <const wchar_t *> (r + 1));
   *w++ = PropSheetFont::point;
   memcpy (w, PropSheetFont::face, sizeof (WCHAR) * (PropSheetFont::face_len + 1));
   w += PropSheetFont::face_len + 1;
@@ -1681,8 +1681,8 @@ Dialog::create_dialog_template (lisp dialog, lisp handlers,
 }
 
 Dialog::Dialog (lisp init)
-     : d_h (0), d_tmpl (0), d_item (Qnil), d_result (Qnil), d_retval (Qnil),
-       d_init (init), d_can_close (1),
+     : d_item (Qnil), d_init (init), d_result (Qnil), d_retval (Qnil),
+       d_h (0), d_tmpl (0), d_can_close (1),
        d_gcpro1 (d_item), d_gcpro2 (d_init), d_gcpro3 (d_result)
 {
 }
@@ -1959,7 +1959,7 @@ Fproperty_sheet (lisp pages, lisp caption, lisp lstart_page)
 
   char *b;
   if (!caption || caption == Qnil)
-    b = "";
+    b = const_cast <char *> ("");
   else
     {
       b = (char *)alloca (2 * xstring_length (caption) + 1);

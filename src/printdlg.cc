@@ -73,7 +73,7 @@ void
 print_dialog::set_margin_text (UINT edit, LONG value, const char *unit) const
 {
   char b[32];
-  sprintf (b, "%d.%d%s", value / 10, value % 10, unit);
+  sprintf (b, "%ld.%ld%s", value / 10, value % 10, unit);
   SetDlgItemText (m_hwnd, edit, b);
 }
 

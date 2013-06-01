@@ -16,7 +16,8 @@ public:
     { return 0; }
 private:
   void operator&() const;
-} nullptr = {};
+} null_ptr = {};
+#  define nullptr null_ptr
 # endif
 
 void *xmalloc (size_t);
@@ -46,6 +47,9 @@ int default_float_format ();
 int streq (const Char *, int, const char *);
 int strequal (const char *, const Char *);
 int strequal (const char *, const Char *, int);
+# ifdef strcasecmp
+#  undef strcasecmp
+# endif
 int strcasecmp (const char *, const char *);
 static inline int
 strcaseeq (const char *s1, const char *s2)

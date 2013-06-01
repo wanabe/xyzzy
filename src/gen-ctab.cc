@@ -140,7 +140,7 @@ ctlchars ()
   buf['}'] = static_cast<byte> (CCF_RBRACE & 0xFF);
   buf['~'] = static_cast<byte> (CCF_TILDE & 0xFF);
 
-  for (int i = 0; i < sizeof buf; i++)
+  for (u_int i = 0; i < sizeof buf; i++)
     if (buf[i])
       buf2[buf[i] & 0xff] = i;
 
@@ -199,10 +199,10 @@ utf7tab ()
   for (int i = '0'; i <= '9'; i++)
     buf[i] = UTF7_SET_D | UTF7_SET_B;
   for (const char *p = "'(),-./:?"; *p; p++)
-    buf[*p] = UTF7_SET_D;
+    buf[static_cast <unsigned char> (*p)] = UTF7_SET_D;
 
   for (const char *p = "!\"#$%&*;<=>@[]^_`{|}"; *p; p++)
-    buf[*p] = UTF7_SET_O;
+    buf[static_cast <unsigned char> (*p)] = UTF7_SET_O;
 
   buf['+'] |= UTF7_SET_B;
   buf['/'] |= UTF7_SET_B;
@@ -233,7 +233,7 @@ hqxtab ()
   memset (buf, 64, sizeof buf);
 
   for (int i = 0; i < 64; i++)
-    buf["!\"#$%&'()*+,-012345689@ABCDEFGHIJKLMNPQRSTUVXYZ[`abcdefhijklmpqr"[i]] = i;
+    buf[static_cast <unsigned char> ("!\"#$%&'()*+,-012345689@ABCDEFGHIJKLMNPQRSTUVXYZ[`abcdefhijklmpqr"[i])] = i;
 
   printf ("unsigned char hqx_decode_table[] =\n");
   printf ("{\n");

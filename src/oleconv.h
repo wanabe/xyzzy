@@ -20,11 +20,15 @@ _w2a_helper (char *a, const wchar_t *w, int l)
 static inline wchar_t *
 _i2w_helper (wchar_t *w, const Char *p, int l)
 {
-  i2w (p, l, w);
+  i2w (p, l, reinterpret_cast <ucs2_t*> (w));
   return w;
 }
 
+#ifdef __MINGW32__
+#define USES_CONVERSION int _convert
+#else
 #define USES_CONVERSION int _convert; _convert
+#endif
 
 #define A2W(a) \
   (_convert = (strlen (a) + 1),\

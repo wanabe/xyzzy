@@ -90,7 +90,7 @@ charclass::count_size (cc &f) const
     if (isset (hi, h))
       {
         int l;
-        for (l = 0; l < 256 / NBITS && !lo[h][l]; l++)
+        for (l = 0; l < 256 / static_cast <int> (NBITS) && !lo[h][l]; l++)
           ;
         int u;
         for (u = 256 / NBITS - 1; u > l && !lo[h][u]; u--)
@@ -131,6 +131,7 @@ charclass::copy (Char *b, cc &f, int size) const
   return b;
 }
 
+#undef INFINITY
 #define INFINITY (CHAR_LIMIT - 1)
 
 class regexp_compile
@@ -1096,7 +1097,7 @@ regexp_compile::char_class_fastmap (const Char *p, char *fastmap) const
               for (int i = u - l - 1; i >= 0; i--)
                 {
                   int ii = (i + l) * NBITS;
-                  for (int j = 0; j < NBITS; j++)
+                  for (u_int j = 0; j < NBITS; j++)
                     if (p[i] & (1 << j))
                       fastmap[ii + j] = 1;
                 }

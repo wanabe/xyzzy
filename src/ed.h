@@ -374,7 +374,7 @@ public:
   HWND toplev;
   HWND hwnd_sw;
 
-  clipboard clipboard;
+  Clipboard clipboard;
 
   kbd_queue kbdq;
   mouse_state mouse;

@@ -247,7 +247,7 @@ WINFS::CreateFile (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
         {
           DWORD a = ::GetFileAttributes (lpFileName);
           SetLastError (e);
-          if (a != -1 && a & FILE_ATTRIBUTE_DIRECTORY)
+          if (a != DWORD (-1) && a & FILE_ATTRIBUTE_DIRECTORY)
             return r;
         }
     }
@@ -375,7 +375,7 @@ WINFS::GetDiskFreeSpace (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster,
 DWORD WINAPI
 WINFS::internal_GetFileAttributes (LPCSTR lpFileName)
 {
-  WINFS_CALL1 (DWORD, -1, lpFileName, GetFileAttributes (lpFileName));
+  WINFS_CALL1 (DWORD, DWORD (-1), lpFileName, GetFileAttributes (lpFileName));
 }
 
 DWORD WINAPI

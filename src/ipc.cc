@@ -11,10 +11,14 @@ struct hwnd_buf
   HWND hwnd[HWND_MAX];
 };
 
+#ifdef _MSC_VER
 #pragma data_seg (".shared")
+#endif
 static hwnd_buf xwb = {0};
+#ifdef _MSC_VER
 #pragma data_seg ()
 #pragma comment (linker, "-section:.shared,RWS")
+#endif
 
 int xyzzy_instance::xi_inst;
 

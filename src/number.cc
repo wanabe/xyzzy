@@ -72,11 +72,13 @@ unsigned_long_value (lisp x)
   return val;
 }
 
+#if 0
 static void
 signal_divide_by_zero ()
 {
   FEdivision_by_zero ();
 }
+#endif
 
 lisp make_integer (char x) { return make_fixnum (x); }
 lisp make_integer (u_char x) { return make_fixnum (x); }
@@ -179,7 +181,7 @@ truncate (double x)
 }
 
 static double __cdecl
-round (double x)
+_double_round (double x)
 {
   double q = truncate (x);
   if (q == x)
@@ -190,7 +192,7 @@ round (double x)
   return x < 0 ? q - 1 : q + 1;
 }
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 # pragma warning (disable:4035)
 #endif
 
@@ -198,7 +200,7 @@ round (double x)
 static long
 truncate (long *r, long x, long y)
 {
-#if defined(_M_IX86) && !defined(__GNUC__)
+#if defined(_M_IX86) && defined(_MSC_VER)
   __asm
     {
       mov ecx, r;
@@ -213,7 +215,7 @@ truncate (long *r, long x, long y)
 #endif
 }
 
-#ifdef _M_IX86
+#if defined(_M_IX86) && defined(_MSC_VER)
 # pragma warning (default:4035)
 #endif
 
@@ -221,7 +223,7 @@ static long
 floor (long *r, long x, long y)
 {
   long q = truncate (r, x, y);
-  if (*r && (!q ? x < 0 != y < 0 : q < 0))
+  if (*r && (!q ? (x < 0) != (y < 0): q < 0))
     {
       q--;
       *r += y;
@@ -233,7 +235,7 @@ static long
 ceiling (long *r, long x, long y)
 {
   long q = truncate (r, x, y);
-  if (*r && (!q ? x < 0 == y < 0 : q > 0))
+  if (*r && (!q ? (x < 0) == (y < 0) : q > 0))
     {
       q++;
       *r -= y;
@@ -250,9 +252,9 @@ round (long *r, long x, long y)
       u_long mr = *r < 0 ? -*r : *r;
       u_long my = y < 0 ? -y : y;
       my -= mr;
-      if (my < mr || (my == mr && q % 2))
+      if (my < mr || (my == mr && (q % 2)))
         {
-          if (!q ? x < 0 != y < 0 : q < 0)
+          if (!q ? (x < 0) != (y < 0) : q < 0)
             {
               q--;
               *r += y;
@@ -974,7 +976,7 @@ Ftruncate (lisp number, lisp divisor)
 lisp
 Fround (lisp number, lisp divisor)
 {
-  return fix_number (number, divisor, round, round, round);
+  return fix_number (number, divisor, _double_round, round, round);
 }
 
 lisp
@@ -1019,7 +1021,7 @@ Fftruncate (lisp number, lisp divisor)
 lisp
 Ffround (lisp number, lisp divisor)
 {
-  return fix_flonum (number, divisor, round);
+  return fix_flonum (number, divisor, _double_round);
 }
 
 lisp

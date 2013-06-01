@@ -589,7 +589,7 @@ big5_to_internal_stream::refill_internal ()
       if (c1 >= 0xa1 && c1 <= 0xf8 && c1 != 0xc8)
         {
           int c2 = s_in.get ();
-          if (c2 >= 0x40 && c2 <= 0x7e || c2 >= 0xa1 && c2 <= 0xfe)
+          if ((c2 >= 0x40 && c2 <= 0x7e) || (c2 >= 0xa1 && c2 <= 0xfe))
             c1 = big5_to_int (c1, c2);
           else
             s_in.putback (c2);
@@ -618,15 +618,15 @@ utf_to_internal_stream::per_lang_putw (int lang)
     default:
     case ENCODING_LANG_JP:
     case ENCODING_LANG_JP2:
-      return &putw_jp;
+      return &utf_to_internal_stream::putw_jp;
 
     case ENCODING_LANG_KR:
     case ENCODING_LANG_CN_GB:
     case ENCODING_LANG_CN_BIG5:
-      return &putw_gen;
+      return &utf_to_internal_stream::putw_gen;
 
     case ENCODING_LANG_CN:
-      return &putw_cn;
+      return &utf_to_internal_stream::putw_cn;
     }
 }
 
@@ -872,7 +872,7 @@ int
 utf7_to_internal_stream::unicode_shifted_encoding ()
 {
   u_char buf[8];
-  int nchars;
+  size_t nchars;
   for (nchars = 0; nchars < sizeof buf; nchars++)
     {
       s_cc = s_in.get ();
@@ -1259,8 +1259,9 @@ internal_to_iso2022_stream::internal_to_iso2022_stream (xinput_stream <Char> &in
                                                         const u_char *initial,
                                                         const u_int *designatable,
                                                         int cjk)
-     : xwrite_stream (in, eol), s_flags (flags), s_initial (initial),
+     : xwrite_stream (in, eol),
        s_gl (&s_g[0]), s_gr (flags & ENCODING_ISO_7BITS ? 0 : &s_g[1]),
+       s_flags (flags), s_initial (initial),
        s_designatable (designatable), s_cjk_translate (cjk_translate_table (cjk)),
        s_lang_cn (cjk == ENCODING_LANG_CN),
        s_vender_code_mapper (select_vender_code_mapper
@@ -1441,7 +1442,7 @@ internal_to_iso2022_stream::refill ()
           if (cc <= 0xa0 || cc == 0xff)
             goto usascii;
           f = designate (ccs_jisx0201_kana);
-          put (u_char (cc & 127 | f));
+          put (u_char ((cc & 127) | f));
           break;
 
         case ccs_iso8859_1:
@@ -2013,7 +2014,7 @@ int
 xdecode_b64_stream::refill ()
 {
   u_char buf[XDECODE_STREAM_BUFSIZE / 3 * 4];
-  int nchars;
+  size_t nchars;
   for (nchars = 0; nchars < sizeof buf;)
     {
       int c = s_in.get ();
@@ -2042,7 +2043,7 @@ xdecode_uu_stream::refill ()
 
   int nchars = uudecode (c);
   u_char buf[63 / 3 * 4];
-  int i;
+  size_t i;
   for (i = 0; i < sizeof buf; i++)
     {
       c = s_in.get ();
@@ -2161,7 +2162,7 @@ xencode_uu_stream::refill ()
     return eof;
 
   u_char buf[BUFSIZE];
-  int nchars;
+  size_t nchars;
   for (nchars = 0; nchars < sizeof buf; nchars++)
     {
       int c = s_in.get ();
@@ -2175,7 +2176,7 @@ xencode_uu_stream::refill ()
 
   u_char *b = s_buf;
   *b++ = uuencode (nchars);
-  for (int i = 0; i < nchars; i += 3)
+  for (u_int i = 0; i < nchars; i += 3)
     {
       *b++ = uuencode ((buf[i] >> 2) & 63);
       *b++ = uuencode (((buf[i] << 4) | (buf[i + 1] >> 4)) & 63);
@@ -2327,7 +2328,7 @@ int
 xdecode_hqx_stream::hqx7::refill ()
 {
   u_char buf[XDECODE_STREAM_BUFSIZE / 3 * 4];
-  int nchars;
+  size_t nchars;
   for (nchars = 0; nchars < sizeof buf;)
     {
       int c = s_in.get ();
@@ -2402,8 +2403,8 @@ xdecode_hqx_stream::read (u_long &x)
 }
 
 xdecode_hqx_stream::xdecode_hqx_stream (xinput_stream <u_char> &in)
-     : xdecode_stream (static_cast <xinput_stream <u_char> &> (s_hqx7)), s_hqx7 (in), s_corrupted (0),
-       s_rest_bytes (0), s_cc (eof), s_rep (0)
+     : xdecode_stream (static_cast <xinput_stream <u_char> &> (s_hqx7)), s_hqx7 (in), s_rest_bytes (0),
+       s_corrupted (0), s_rep (0), s_cc (eof)
 {
   *s_name = 0;
   int l = get ();

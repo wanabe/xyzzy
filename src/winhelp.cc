@@ -257,7 +257,7 @@ iset::init_files (HWND dlg)
 
 inline
 iset::iset (char *topic)
-     : is_topic (topic), is_files (0)
+     : is_files (0), is_topic (topic)
 {
 }
 

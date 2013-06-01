@@ -31,7 +31,7 @@ static WNDPROC ListViewProc;
 #undef ListView_GetItemRect
 #define ListView_GetItemRect(hwnd, i, prc, code) \
   (BOOL)CallWindowProc (ListViewProc, (hwnd), LVM_GETITEMRECT, (WPARAM)(int)(i), \
-                    ((prc) ? (((RECT FAR *)(prc))->left = (code),(LPARAM)(RECT FAR*)(prc)) : (LPARAM)(RECT FAR*)NULL))
+                    (((RECT FAR *)(prc))->left = (code),(LPARAM)(RECT FAR*)(prc)))
 
 #undef ListView_SetItemState
 #define ListView_SetItemState(hwndLV, i, data, mask) \
@@ -857,8 +857,8 @@ isearch (HWND hwnd, int cc, int wrap, listview_item_data *data)
       lvi.iSubItem = 0;
       lvi.pszText = text;
       lvi.cchTextMax = data->icc + 2;
-      size_t l = CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT,
-                                 cur, LPARAM (&lvi));
+      CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT,
+                      cur, LPARAM (&lvi));
       if (lvi.pszText != text)
         {
           memcpy (text, lvi.pszText, data->icc + 2);
@@ -996,7 +996,7 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           (listview_item_data *)alloc_item_data (hwnd, sizeof *data);
         if (!data)
           return 0;
-        if (!set_owner_draw_proc (hwnd, listview_draw_item))
+        if (!set_owner_draw_proc (hwnd, reinterpret_cast <OWNERDRAWPROC> (listview_draw_item)))
           {
             free_item_data (hwnd);
             return 0;

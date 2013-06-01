@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ed.h"
 
+static void remove_undo_info (UndoInfo *up);
+
 class UndoInfo
 {
 protected:
@@ -22,7 +24,7 @@ protected:
   UndoInfo *u_prev;
   point_t u_point;
 
-  UndoInfo (point_t point) : u_point (point), u_prev (0) {}
+  UndoInfo (point_t point) : u_prev (0), u_point (point) {}
 
   virtual int undo (Window *) {assert (0); return 1;}
   virtual int can_append_insert (point_t) const {return 0;}

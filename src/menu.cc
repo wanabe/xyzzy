@@ -90,6 +90,7 @@ append_menu (HMENU hmenu, UINT flags, UINT id, const char *name)
     return AppendMenu (hmenu, flags, id, name);
 }
 
+#if 0
 static int
 insert_menu (HMENU hmenu, UINT pos, UINT flags, UINT id, const char *name)
 {
@@ -102,6 +103,7 @@ insert_menu (HMENU hmenu, UINT pos, UINT flags, UINT id, const char *name)
   else
     return InsertMenu (hmenu, pos, flags, id, name);
 }
+#endif
 
 lisp
 Fcreate_menu (lisp tag)

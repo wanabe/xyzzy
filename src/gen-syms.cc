@@ -2829,7 +2829,7 @@ print_proto (symbols *p, int n, const char *)
   for (int i = 0; i < n; i++, p++)
     if (p->fn)
       {
-        printf ("lisp ");
+        printf ("lisp __stdcall ");
         print_cname (p->fn);
         printf (" (");
         print_arg (p->req, p->opt, p->flags, true);
@@ -2886,7 +2886,7 @@ make_symbol_name (symbols *p, int n, const char *)
     if (!p->name)
       {
         char *s = strdup (p->sym + 1);
-        for (char *s2 = s; *s2; *s2++)
+        for (char *s2 = s; *s2; s2++)
           if (*s2 == '_')
             *s2 = '-';
         p->name = s;
@@ -2986,7 +2986,7 @@ process_interactive ()
 {
   const char **intr = (const char **)alloca (sizeof (char *) * numberof (ed));
   int j = 0;
-  for (int i = 0; i < numberof (ed); i++)
+  for (u_int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       intr[j++] = ed[i].interactive;
   if (!j)
@@ -3003,7 +3003,7 @@ process_interactive ()
       intr[j++] = intr[i];
   n = j;
 
-  for (int i = 0; i < numberof (ed); i++)
+  for (u_int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       {
         for (j = 0; j < n; j++)
@@ -3033,7 +3033,7 @@ process_interactive ()
 static void
 print_version ()
 {
-  printf ("int dump_version = %d;\n", time (0));
+  printf ("int dump_version = %ld;\n", time (0));
 }
 
 #ifdef __MINGW32__

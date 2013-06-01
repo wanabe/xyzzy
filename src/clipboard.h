@@ -4,7 +4,7 @@
 typedef BOOL (*AddClipboardFormatListener)(HWND hwnd);
 typedef BOOL (*RemoveClipboardFormatListener)(HWND hwnd);
 
-class clipboard
+class Clipboard
 {
 private:
   AddClipboardFormatListener AddClipboardFormatListenerProc;
@@ -18,7 +18,7 @@ private:
   void remove_clipboard_chain (HWND hwnd);
 
 public:
-  clipboard ();
+  Clipboard ();
   void add_listener (HWND hwnd);
   void remove_listener (HWND hwnd);
   void repair_clipboard_chain_if_need (HWND hwnd);

@@ -251,7 +251,7 @@ sweep_object (ldataP &ld, u_int size, void (*delete_fn)(void *), int &xnuses, in
       char *d = lp->dr_data;
       char *de = d + size * LDATASIZE_NOBJS (size);
 
-      for (int i = 0; i < numberof (lp->dr_gc); i++)
+      for (u_int i = 0; i < numberof (lp->dr_gc); i++)
         if (lp->dr_gc[i])
           goto doit;
 
@@ -321,7 +321,7 @@ ldata <T, F>::sweep ()
       T *d = (T *)lp->dr_data;
       T *de = d + LDATA_NOBJS (T);
 
-      for (int i = 0; i < numberof (lp->dr_gc); i++)
+      for (u_int i = 0; i < numberof (lp->dr_gc); i++)
         if (lp->dr_gc[i])
           goto doit;
 
@@ -2796,7 +2796,7 @@ rdump_xyzzy (FILE *fp)
 {
   dump_header head;
   readf (fp, &head, sizeof head);
-  if (head.magic != DMAGIC
+  if (head.magic != static_cast <long> (DMAGIC)
       || head.version != dump_version
       || head.file_size != _filelength (_fileno (fp))
       || head.file_size_not != ~head.file_size

@@ -8,8 +8,7 @@ lbase_array::~lbase_array ()
       contents = 0;
       if (base_array_p (displaced_to))
         {
-          int f = delq (this, &xarray_referenced_list (displaced_to));
-          assert (f);
+          assert (delq (this, &xarray_referenced_list (displaced_to)));
         }
     }
   for (lisp x = referenced_list; consp (x); x = xcdr (x))

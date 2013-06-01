@@ -161,7 +161,6 @@ static fixup_nl_code (ReadFileContext &rfc)
 int
 Buffer::read_file_contents (ReadFileContext &rfc, xread_stream &sin)
 {
-  int nchunks = 1;
   long total_bytes = sin.input_stream ().rest_chars ();
   DWORD last_tick = GetTickCount () + 1000;
   char msg[64];
@@ -183,7 +182,7 @@ Buffer::read_file_contents (ReadFileContext &rfc, xread_stream &sin)
       if (int (t - last_tick) >= 300)
         {
           last_tick = t;
-          sprintf (msg, "Reading %d/%d bytes...",
+          sprintf (msg, "Reading %ld/%ld bytes...",
                    total_bytes - sin.input_stream ().rest_chars (),
                    total_bytes);
           app.status_window.text (msg);
@@ -442,7 +441,7 @@ int
 same_file_p (const char *path1, const char *path2)
 {
   if (pathname_equal (path1, path2))
-    return WINFS::GetFileAttributes (path1) != -1;
+    return WINFS::GetFileAttributes (path1) != DWORD(-1);
 
   BY_HANDLE_FILE_INFORMATION i1, i2;
   HANDLE h1 = WINFS::CreateFile (path1, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -1161,7 +1160,7 @@ Buffer::save_buffer (lisp encoding, lisp eol)
     file_error (Eis_character_special_file, lfile_name);
 
   DWORD filemode = WINFS::GetFileAttributes (filename);
-  if (filemode != -1 && filemode & FILE_ATTRIBUTE_READONLY)
+  if (filemode != DWORD (-1) && filemode & FILE_ATTRIBUTE_READONLY)
     file_error (Eis_write_protected, lfile_name);
 
   FileTime modtime (lfile_name, 0);
@@ -1207,7 +1206,7 @@ Buffer::save_buffer (lisp encoding, lisp eol)
       int real_backup = 0;
 
       filemode = WINFS::GetFileAttributes (filename);
-      if (filemode == -1)
+      if (filemode == DWORD (-1))
         *backup = 0;
       else
         {
@@ -1271,7 +1270,7 @@ Buffer::save_buffer (lisp encoding, lisp eol)
       keep_lock lock (this);
 
       filemode = WINFS::GetFileAttributes (filename);
-      if (filemode != -1)
+      if (filemode != DWORD (-1))
         {
           WINFS::SetFileAttributes (tmpname, filemode);
           if ((!b_make_backup

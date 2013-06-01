@@ -151,7 +151,7 @@ sockssl::setup_credentials (DWORD protcols) const
   TimeStamp expiry;
   SECURITY_STATUS status = AcquireCredentialsHandle (
     nullptr,
-    UNISP_NAME_A,
+    const_cast <SEC_CHAR *> (UNISP_NAME_A),
     SECPKG_CRED_OUTBOUND,
     nullptr,
     ss_schannel_cred,
@@ -380,9 +380,9 @@ sockssl::verify_certificate (const char *server_name, DWORD cert_flags)
   chain_para.RequestedUsage.dwType = USAGE_MATCH_TYPE_OR;
 
   LPSTR server_usages[] = {
-    szOID_PKIX_KP_SERVER_AUTH,
-    szOID_SERVER_GATED_CRYPTO,
-    szOID_SGC_NETSCAPE,
+    const_cast <LPSTR> (szOID_PKIX_KP_SERVER_AUTH),
+    const_cast <LPSTR> (szOID_SERVER_GATED_CRYPTO),
+    const_cast <LPSTR> (szOID_SGC_NETSCAPE),
   };
 
   chain_para.RequestedUsage.Usage.cUsageIdentifier = 3;
@@ -414,7 +414,7 @@ sockssl::verify_certificate (const char *server_name, DWORD cert_flags)
   size_t len = strlen (server_name) + 1;
   Char *w = (Char *)alloca (len * sizeof (Char));
   a2w (w, server_name, len);
-  policy_https.pwszServerName = w;
+  policy_https.pwszServerName = reinterpret_cast <WCHAR *> (w);
 
   memset (&policy_para, 0, sizeof (policy_para));
   policy_para.cbSize = sizeof (policy_para);
@@ -724,7 +724,7 @@ int
 sockssl::max_initial_chunk_size () const
 {
   PSecPkgInfo info;
-  SECURITY_STATUS status = QuerySecurityPackageInfo (UNISP_NAME, &info);
+  SECURITY_STATUS status = QuerySecurityPackageInfo (const_cast <SEC_CHAR *> (UNISP_NAME), &info);
   if (status != SEC_E_OK)
     throw sock_error ("QuerySecurityPackageInfo", status);
 

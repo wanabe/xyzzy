@@ -1080,7 +1080,7 @@ Flogbitp (index, x) integer
 ss: {
       if (index < 0)
         FErange_error (lindex);
-      if (index >= BITS_PER_LONG)
+      if (index >= (long)BITS_PER_LONG)
         return boole (x < 0);
       return boole (x & (1 << index));
     }

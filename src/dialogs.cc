@@ -114,7 +114,7 @@ buffer_list_init_column (HWND list)
   HIMAGELIST hil = ImageList_LoadBitmap (app.hinst,
                                          MAKEINTRESOURCE (IDB_BUFSEL),
                                          17, 1, RGB (255, 255, 255));
-  ListView_SetImageList (list, hil, LVSIL_SMALL);
+  (void)ListView_SetImageList (list, hil, LVSIL_SMALL);
 }
 
 static inline void
@@ -137,7 +137,7 @@ static void
 store_buffer_size (HWND list, const Buffer *bp, LV_ITEM *lvi)
 {
   char b[32];
-  sprintf (b, "%d", bp->b_nchars);
+  sprintf (b, "%ld", bp->b_nchars);
   lvi->pszText = b;
   ListView_SetItem (list, lvi);
 }
@@ -152,7 +152,7 @@ store_string (HWND list, lisp string, LV_ITEM *lvi)
       lvi->pszText = b;
     }
   else
-    lvi->pszText = "";
+    lvi->pszText = const_cast <char *> ("");
   ListView_SetItem (list, lvi);
 }
 
@@ -783,7 +783,7 @@ Ffile_name_dialog (lisp keys)
   ofn.lCustData = DWORD (&ofn);
 
   char buf[1024 * 32];
-  if (stringp (ldefault) && xstring_length (ldefault) < sizeof buf / 2 - 1)
+  if (stringp (ldefault) && xstring_length (ldefault) < static_cast <int> (sizeof buf / 2) - 1)
     {
       w2s (buf, ldefault);
       map_sl_to_backsl (buf);
@@ -1021,7 +1021,7 @@ ODN::ok (HWND hwnd)
   if (!*path)
     return 1;
   DWORD atr = WINFS::GetFileAttributes (path);
-  if (atr == -1)
+  if (atr == DWORD (-1))
     return error (hwnd, GetLastError ());
   if (!(atr & FILE_ATTRIBUTE_DIRECTORY))
     return error (hwnd, ERROR_DIRECTORY);
@@ -1109,7 +1109,7 @@ Fdirectory_name_dialog (lisp keys)
   odn.lpfnHook = directory_name_dialog_hook;
   odn.lpTemplateName = MAKEINTRESOURCE (IDD_DIRECTORY);
 
-  if (xstring_length (ldefault) < sizeof odn.odn_result / 2 - 1)
+  if (xstring_length (ldefault) < static_cast <int> (sizeof odn.odn_result) / 2 - 1)
     {
       w2s (odn.odn_result, ldefault);
       map_sl_to_backsl (odn.odn_result);
@@ -1354,7 +1354,7 @@ DriveDialog::setup_list (HWND hwnd)
   HIMAGELIST hil = ImageList_LoadBitmap (app.hinst,
                                          MAKEINTRESOURCE (IDB_FILESEL),
                                          16, 1, RGB (0, 0, 255));
-  ListView_SetImageList (hwnd, hil, LVSIL_SMALL);
+  (void)ListView_SetImageList (hwnd, hil, LVSIL_SMALL);
 }
 
 void

@@ -320,16 +320,16 @@ br_compare (const bignum_rep *x, const bignum_rep *y)
 int
 bignum_rep::is_long () const
 {
-  if (br_len < SHORT_PER_LONG)
+  if (br_len < static_cast <int> (SHORT_PER_LONG))
     return 1;
-  if (br_len > SHORT_PER_LONG)
+  if (br_len > static_cast <int> (SHORT_PER_LONG))
     return 0;
   u_long t = br_data[SHORT_PER_LONG - 1];
   if (t < BR_MIN)
     return 1;
   if (br_sign == BR_NEGATIVE && t == BR_MIN)
     {
-      for (int i = 0; i < SHORT_PER_LONG - 1; i++)
+      for (u_int i = 0; i < SHORT_PER_LONG - 1; i++)
         if (br_data[i])
           return 0;
       return 1;
@@ -342,13 +342,13 @@ bignum_rep::to_long () const
 {
   if (!br_len)
     return 0;
-  if (br_len > SHORT_PER_LONG)
+  if (br_len > static_cast <int> (SHORT_PER_LONG))
     return plusp () ? LONG_MAX : LONG_MIN;
-  if (br_len < SHORT_PER_LONG)
+  if (br_len < static_cast <int> (SHORT_PER_LONG))
     {
       long sum = br_data[br_len - 1];
       if (SHORT_PER_LONG > 2)
-        for (int i = br_len - 2; i >= 0; i--)
+        for (u_int i = br_len - 2; i >= 0; i--)
           sum = up (sum) + br_data[i];
       return plusp () ? sum : -sum;
     }
@@ -368,7 +368,7 @@ bignum_rep::is_ulong () const
 {
   if (minusp ())
     return 0;
-  return br_len <= SHORT_PER_LONG;
+  return br_len <= static_cast <int> (SHORT_PER_LONG);
 }
 
 u_long
@@ -378,7 +378,7 @@ bignum_rep::to_ulong () const
     return 0;
   if (minusp ())
     return 0;
-  if (br_len > SHORT_PER_LONG)
+  if (br_len > static_cast <int> (SHORT_PER_LONG))
     return ULONG_MAX;
   u_long sum = 0;
   for (int i = br_len - 1; i >= 0; i--)
@@ -1089,7 +1089,7 @@ gcd (const bignum_rep *x, const bignum_rep *y)
   for (int i = 0; i < ul; i++)
     {
       u_long xy = x->br_data[i] | y->br_data[i];
-      for (int j = 1; j < BR_RADIX; j <<= 1, nshift--)
+      for (u_int j = 1; j < BR_RADIX; j <<= 1, nshift--)
         if (xy & j)
           goto found;
     }
@@ -1118,7 +1118,7 @@ found:
       for (int i = 0; i < tl; i++)
         {
           u_long tt = t->br_data[i];
-          for (int j = 1; j < BR_RADIX; j <<= 1, sft--)
+          for (u_int j = 1; j < BR_RADIX; j <<= 1, sft--)
             if (tt & j)
               goto found2;
         }
@@ -1237,6 +1237,13 @@ logope (bignum_rep *&r, logope_code ope,
 
         case LOC_ORC2:
           c = i1 | ~i2;
+          break;
+        case LOC_SET:
+        case LOC_CLR:
+        case LOC_1:
+        case LOC_2:
+        case LOC_C1:
+        case LOC_C2:
           break;
         }
       r->br_data[i] = lowpart (c);
@@ -1392,7 +1399,7 @@ ato_bignum_rep (bignum_rep *&br, const Char *p, int pl, int radix)
   const Char *pe = p + pl;
   int width = pl * log2 (static_cast <u_long> (radix)) / BR_SHIFT + 1;
   bignum_rep *rep;
-  if (width <= SHORT_PER_LONG)
+  if (width <= static_cast <int> (SHORT_PER_LONG))
     {
       rep = &brl;
       rep->br_len = 0;

@@ -161,7 +161,7 @@ buffer_info::position (char *b, char *be) const
   else if (b_wp)
     {
       char tem[64];
-      sprintf (tem, "%d:%d", b_wp->w_plinenum, b_wp->w_column);
+      sprintf (tem, "%ld:%ld", b_wp->w_plinenum, b_wp->w_column);
       b = stpncpy (b, tem, be - b);
     }
   return b;
@@ -198,7 +198,6 @@ buffer_info::admin_user (char *b, char *be) const
 {
   if (Fadmin_user_p () == Qt)
     {
-      int f = 0;
       b = stpncpy (b, "ŠÇ—Ò: ", be - b);
     }
   return b;

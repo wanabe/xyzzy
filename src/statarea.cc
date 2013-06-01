@@ -123,7 +123,7 @@ status_area::position ()
   if (!wp)
     return calc_extent (ST_POS, s_nil);
   char b[32];
-  sprintf (b, " %5d:%d ", wp->w_plinenum, wp->w_column + 1);
+  sprintf (b, " %5ld:%ld ", wp->w_plinenum, wp->w_column + 1);
   return calc_extent (ST_POS, b);
 }
 

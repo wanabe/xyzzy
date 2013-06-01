@@ -149,7 +149,7 @@ NotifyWndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                 app.status_window.puts (i->szDestFileName, 1);
               else if (wparam == 1)
                 {
-                  sprintf (buf, "%s(%u/%u)...",
+                  sprintf (buf, "%s(%lu/%lu)...",
                            i->szDestFileName, i->dwWriteSize, i->dwFileSize);
                   app.status_window.puts (buf, 1);
                 }
@@ -461,7 +461,7 @@ Tar::extract (HWND hwnd, const char *path,
 int
 Tar::create (HWND hwnd, const char *path, const char *respfile) const
 {
-  int l = strlen (path);
+  size_t l = strlen (path);
 #define EQ(EXT) (sizeof (EXT) - 1 <= l \
                  && !_memicmp (path + l - (sizeof (EXT) - 1), (EXT), \
                                sizeof (EXT) - 1))
@@ -745,7 +745,7 @@ SevenZip::puts_create (FILE *fp, char *name, const char *path) const
     }
   fputs (name, fp);
   DWORD a = GetFileAttributes (path);
-  if (a != ~0 && a & FILE_ATTRIBUTE_DIRECTORY)
+  if (a != DWORD(~0) && a & FILE_ATTRIBUTE_DIRECTORY)
     {
       if (!has_trail_slash (path))
         putc ('\\', fp);
@@ -1041,7 +1041,7 @@ archiver_error (int e, lisp path, message_code mc)
       };
   if (e < 0x8000)
     return;
-  for (int i = 0; i < numberof (ec); i++)
+  for (u_int i = 0; i < numberof (ec); i++)
     if (e == ec[i].xe)
       {
         if (ec[i].warn)
@@ -1216,7 +1216,7 @@ Fconvert_to_SFX (lisp larcname, lisp lopt)
       *sl = 0;
       WINFS::SetCurrentDirectory (dirname);
     }
-  char *opt = "";
+  char *opt = const_cast <char *> ("");
   if (lopt && lopt != Qnil)
     {
       opt = (char *)alloca (w2sl (lopt) + 1);

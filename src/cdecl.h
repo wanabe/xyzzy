@@ -2,7 +2,9 @@
 #ifndef _cdecl_h_
 # define _cdecl_h_
 
-# pragma warning (disable: 4201)
+# ifdef _MSC_VER
+#  pragma warning (disable: 4201)
+# endif
 
 # include <stdio.h>
 # include <stdint.h>
@@ -16,12 +18,16 @@
 # include <mbstring.h>
 # include <malloc.h>
 
-# pragma warning (default: 4201)
+# ifdef _MSC_VER
+#  pragma warning (default: 4201)
+#  pragma warning (disable: 4510)
+#  pragma warning (disable: 4514)
+#  pragma warning (disable: 4610)
+# endif
 
-# pragma warning (disable: 4510)
-# pragma warning (disable: 4514)
-# pragma warning (disable: 4610)
-
+# ifdef alloca
+#  undef alloca
+# endif
 # define alloca _alloca
 # define memicmp _memicmp
 # define strdup _strdup
@@ -31,6 +37,9 @@
 # define BITS_PER_INT (sizeof (int) * CHAR_BIT)
 # define BITS_PER_LONG (sizeof (long) * CHAR_BIT)
 
+# ifdef PATH_MAX
+#  undef PATH_MAX
+# endif
 # define PATH_MAX 1024
 # define BUFFER_NAME_MAX PATH_MAX
 
@@ -57,7 +66,9 @@ typedef long point_t;
 
 # undef min
 # undef max
-# define NOMINMAX
+# ifndef NOMINMAX
+#  define NOMINMAX
+# endif
 
 template <class T>
 inline const T &

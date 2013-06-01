@@ -32,9 +32,9 @@ public:
 class safe_vidl
 {
 protected:
+  IMalloc *ialloc;
   ITEMIDLIST **idls;
   int nidls;
-  IMalloc *ialloc;
 public:
   safe_vidl (IMalloc *ialloc_, ITEMIDLIST **idls_, int nidls_)
        : ialloc (ialloc_), idls (idls_), nidls (nidls_)

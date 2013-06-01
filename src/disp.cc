@@ -364,7 +364,7 @@ public:
   void paint (HDC hdc, ucs2_t wc, int flags)
     {
       p_r.right = min (int (p_r.left + p_cellw), p_right);
-      ExtTextOutW (hdc, p_x, p_y, flags, &p_r, &wc, 1, 0);
+      ExtTextOutW (hdc, p_x, p_y, flags, &p_r, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
       p_r.left = p_r.right;
       p_x += p_cellw;
     }
@@ -378,7 +378,7 @@ paint_chars_ctx::paint_lucida (HDC hdc, ucs2_t wc, int flags)
   int o = (LUCIDA_OFFSET (wc - UNICODE_SMLCDM_MIN) * f.size ().cy / LUCIDA_BASE_HEIGHT
            + app.text_font.cell ().cx / 2);
   p_r.right = min (int (p_r.left + p_cellw), p_right);
-  ExtTextOutW (hdc, p_x + o, p_y, flags, &p_r, &wc, 1, 0);
+  ExtTextOutW (hdc, p_x + o, p_y, flags, &p_r, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
   p_r.left = p_r.right;
   p_x += p_cellw;
 }
@@ -1152,7 +1152,7 @@ Window::kwdmatch (lisp kwdhash, const Char *p, const Chunk *cp,
               || (xchar_syntax (tab, cc) != SCword
                   && xchar_syntax (tab, cc) != SCsymbol))
             break;
-          if (sl < numberof (buf))
+          if (sl < static_cast <int> (numberof (buf)))
             buf[sl] = cc;
           else
             {
@@ -1166,7 +1166,7 @@ Window::kwdmatch (lisp kwdhash, const Char *p, const Chunk *cp,
     }
 
   symlen = l;
-  if (sl < numberof (buf))
+  if (sl < static_cast <int> (numberof (buf)))
     {
       temporary_string t (buf, sl);
       lisp x = gethash (t.string (), kwdhash, Qnil);
@@ -1517,7 +1517,7 @@ private:
   lisp check_format (lisp);
   int sc2mask (int sc) {return 1 << ((sc >> GLYPH_KEYWORD_SHIFT_BITS) & 3);}
 public:
-  regexp_kwd::regexp_kwd (lisp, point_t, const Buffer *);
+  regexp_kwd (lisp, point_t, const Buffer *);
   int kwdmatch (const Point &, int, int &);
   int kwdmatch_begin (const Point &, int);
   int valid_p () const {return int (rk_list);}
@@ -1605,7 +1605,7 @@ inline
 regexp_kwd::regexp_kwd (lisp list, point_t point, const Buffer *bp)
      : rk_list (list), rk_last_try (point_t (-1)),
        rk_match_beg (point), rk_match_end (point),
-       rk_match (0), rk_val (0), rk_use_vals (0),
+       rk_val (0), rk_use_vals (0), rk_match (0),
        rk_bufp (bp), rk_tab (xsyntax_table (rk_bufp->lsyntax_table)),
        rk_ctx_mask (0)
 {
@@ -1878,9 +1878,9 @@ Window::redraw_line (glyph_data *gd, Point &point, long vlinenum, long plinenum,
             {
               char buf[32];
               if (plinenum >= 1000000)
-                sprintf (buf, "%06d", plinenum % 1000000);
+                sprintf (buf, "%06ld", plinenum % 1000000);
               else
-                sprintf (buf, "%6d", plinenum);
+                sprintf (buf, "%6ld", plinenum);
               int n = min (6, int (w_ch_max.cx));
               for (int i = 0; i < n; i++)
                 *g++ = f | buf[i];
@@ -2294,7 +2294,7 @@ Window::redraw_line (glyph_data *gd, Point &point, long vlinenum, long plinenum,
                       break;
                     }
                   *g++ = (f & ~GLYPH_TEXT_MASK) | GLYPH_CTRL | '^';
-                  *g++ = (f & ~GLYPH_TEXT_MASK) | GLYPH_CTRL | cc + '@';
+                  *g++ = (f & ~GLYPH_TEXT_MASK) | GLYPH_CTRL | (cc + '@');
                 }
             }
           else if (cc == CC_DEL)
@@ -3160,7 +3160,7 @@ Window::paint_minibuffer_message (lisp string)
           if (g + 1 == ge)
             break;
           *g++ = GLYPH_CTRL | '^';
-          *g++ = GLYPH_CTRL | cc + '@';
+          *g++ = GLYPH_CTRL | (cc + '@');
         }
       else if (cc == CC_DEL)
         {
@@ -3268,7 +3268,7 @@ mode_line_percent_painter::need_repaint_all ()
 {
 	char buf[32];
 	format_percent(buf, 32, m_percent);
-	return m_point_pixel >= 0 && strlen(buf) != m_last_width;
+	return m_point_pixel >= 0 && strlen(buf) != static_cast <size_t> (m_last_width);
 
 }
 

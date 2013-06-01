@@ -71,6 +71,10 @@ create_char_encoding (encoding_type type, lisp name, lisp display_name,
                 && xchar_encoding_utf_cjk (x) == param2)
               return x;
             break;
+
+          case encoding_iso2022:
+          case encoding_iso2022_noesc:
+            break;
           }
     }
 
@@ -97,6 +101,10 @@ create_char_encoding (encoding_type type, lisp name, lisp display_name,
     case encoding_utf16:
       xchar_encoding_utf_flags (x) = param;
       xchar_encoding_utf_cjk (x) = param2;
+      break;
+
+    case encoding_iso2022:
+    case encoding_iso2022_noesc:
       break;
     }
   return x;
@@ -153,7 +161,7 @@ static const struct {lisp *obj; int ccs;} obj2ccs[] =
 static int
 to_charset (lisp lcharset)
 {
-  for (int i = 0; i < numberof (obj2ccs); i++)
+  for (u_int i = 0; i < numberof (obj2ccs); i++)
     if (lcharset == *obj2ccs[i].obj)
       return obj2ccs[i].ccs;
   FEsimple_error (Eunknown_charset, lcharset);
@@ -163,7 +171,7 @@ to_charset (lisp lcharset)
 static lisp
 from_charset (int charset)
 {
-  for (int i = 0; i < numberof (obj2ccs); i++)
+  for (u_int i = 0; i < numberof (obj2ccs); i++)
     if (charset == obj2ccs[i].ccs)
       return *obj2ccs[i].obj;
   assert (0);

@@ -2,7 +2,7 @@
 #include "ed.h"
 #include "clipboard.h"
 
-clipboard::clipboard ()
+Clipboard::Clipboard ()
        : AddClipboardFormatListenerProc (nullptr),
          RemoveClipboardFormatListenerProc (nullptr)
 {
@@ -21,14 +21,14 @@ clipboard::clipboard ()
 
 
 void
-clipboard::add_clipboard_chain (HWND hwnd)
+Clipboard::add_clipboard_chain (HWND hwnd)
 {
   hwnd_next_clipboard = SetClipboardViewer (hwnd);
   last_clipboard_seqno = GetClipboardSequenceNumber ();
 }
 
 void
-clipboard::remove_clipboard_chain (HWND hwnd)
+Clipboard::remove_clipboard_chain (HWND hwnd)
 {
   ChangeClipboardChain (hwnd, hwnd_next_clipboard);
   hwnd_next_clipboard = 0;
@@ -37,7 +37,7 @@ clipboard::remove_clipboard_chain (HWND hwnd)
 
 
 void
-clipboard::add_listener (HWND hwnd)
+Clipboard::add_listener (HWND hwnd)
 {
   if (use_newapi_p)
     AddClipboardFormatListenerProc (hwnd);
@@ -46,7 +46,7 @@ clipboard::add_listener (HWND hwnd)
 }
 
 void
-clipboard::remove_listener (HWND hwnd)
+Clipboard::remove_listener (HWND hwnd)
 {
   if (use_newapi_p)
     RemoveClipboardFormatListenerProc (hwnd);
@@ -55,7 +55,7 @@ clipboard::remove_listener (HWND hwnd)
 }
 
 void
-clipboard::repair_clipboard_chain_if_need (HWND hwnd)
+Clipboard::repair_clipboard_chain_if_need (HWND hwnd)
 {
   if (use_newapi_p) return;
   if (last_clipboard_seqno == GetClipboardSequenceNumber ()) return;
@@ -65,7 +65,7 @@ clipboard::repair_clipboard_chain_if_need (HWND hwnd)
 }
 
 void
-clipboard::draw_clipboard (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+Clipboard::draw_clipboard (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   if (hwnd_next_clipboard)
     SendMessage (hwnd_next_clipboard, msg, wparam, lparam);
@@ -73,7 +73,7 @@ clipboard::draw_clipboard (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 }
 
 void
-clipboard::change_clipboard_chain (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+Clipboard::change_clipboard_chain (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   if (HWND (wparam) == hwnd_next_clipboard)
     hwnd_next_clipboard = HWND (lparam);
@@ -82,7 +82,7 @@ clipboard::change_clipboard_chain (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lp
 }
 
 void
-clipboard::clipboard_update (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+Clipboard::clipboard_update (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   if (last_clipboard_seqno == GetClipboardSequenceNumber ())
     return;

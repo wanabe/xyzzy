@@ -592,7 +592,7 @@ tab_bar::calc_tab_height ()
     {
       TC_ITEM ti;
       ti.mask = TCIF_TEXT;
-      ti.pszText = "xyzzy";
+      ti.pszText = const_cast <char *> ("xyzzy");
       insert_item (0, ti);
     }
 
@@ -2430,7 +2430,7 @@ tool_bm::load_mapped_bitmap (const char *filename, HBITMAP &hbm)
   const BITMAPFILEHEADER &bf = *(const BITMAPFILEHEADER *)mf.base ();
   const BITMAPINFOHEADER &bi = *(const BITMAPINFOHEADER *)(&bf + 1);
 
-  if (bf.bfType != 'MB'
+  if (bf.bfType != (WORD('M') << 8 | 'B')
       || bi.biSize != sizeof bi
       || bi.biWidth <= 0
       || !bi.biHeight
@@ -2473,7 +2473,7 @@ tool_bm::load_mapped_bitmap (const char *filename, HBITMAP &hbm)
   for (int i = 0; i < ncolors; i++)
     {
       dst[i] = src[i];
-      for (int j = 0; j < numberof (cm); j++)
+      for (u_int j = 0; j < numberof (cm); j++)
         if (src[i] == cm[j].from)
           {
             dst[i] = cm[j].to;

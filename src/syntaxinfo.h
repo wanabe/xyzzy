@@ -46,7 +46,7 @@ struct syntax_state
   void update_html (const Char *);
   void update_parentheses (const Char *);
 
-  syntax_state () : ss_state (SS_NORMAL), ss_strch (0) {}
+  syntax_state () : ss_strch (0), ss_state (SS_NORMAL) {}
   void operator = (const syntax_state &src)
     {
       ss_state = src.ss_state;

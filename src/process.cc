@@ -38,7 +38,7 @@ EnvStrings::set (char **nb, char **&ne, char *b) const
   for (; nb < ne; nb++)
     if (!memicmp (b, *nb, l))
       {
-        *nb = b[l] ? b : "";
+        *nb = b[l] ? b : const_cast <char *> ("");
         return;
       }
   if (b[l])
@@ -633,6 +633,11 @@ class process_input_stream: public byte_input_stream
                     *s = '\n';
                 break;
               }
+            case eol_lf:
+            case eol_guess:
+              {
+                break;
+              }
             }
         }
       while (!l);
@@ -893,7 +898,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
     file_error (GetLastError ());
 
   char *cmdline = (char *)alloca (128 + xstring_length (command) * 2 + 1);
-  sprintf (cmdline, "xyzzyenv -s%u %u ", show, HANDLE (event));
+  sprintf (cmdline, "xyzzyenv -s%u %u ", show, reinterpret_cast <u_int> (HANDLE (event)));
   w2s (cmdline + strlen (cmdline), command);
 
   u_int thread_id;

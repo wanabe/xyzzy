@@ -962,11 +962,11 @@ skip_syntax_spec (lisp syntax_spec, int dir)
       Char c = *p++;
       if (!ascii_char_p (c) || syntax_spec_table[c] == -1)
         FEsimple_error (Einvalid_syntax_spec, syntax_spec);
-      buf[syntax_spec_table[c]] = 1;
+      buf[static_cast <u_char> (syntax_spec_table[c])] = 1;
     }
 
   if (not_char)
-    for (int i = 0; i < sizeof buf; i++)
+    for (u_int i = 0; i < sizeof buf; i++)
       buf[i]--;
 
   Window *wp = selected_window ();

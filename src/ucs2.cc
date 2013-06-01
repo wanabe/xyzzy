@@ -522,7 +522,7 @@ init_ucs2_table ()
 {
   make_wc2cp932_table ();
 
-  for (int i = 0; i < numberof (wc2internal_table); i++)
+  for (u_int i = 0; i < numberof (wc2internal_table); i++)
     wc2internal_table[i] = Char (-1);
 
   init_charset_category ();
@@ -601,7 +601,7 @@ w2i_half_width (ucs2_t wc)
 {
   Char cc = w2i (wc);
   if (cc != Char (-1) && char_width (cc) != 1)
-    for (int i = 0; i < numberof (to_half_width_hashtabs); i++)
+    for (u_int i = 0; i < numberof (to_half_width_hashtabs); i++)
       {
         Char t = lookup_wc2int_hash (*to_half_width_hashtabs[i], wc);
         if (t != Char (-1))

@@ -102,7 +102,7 @@ Fsi_make_vector (lisp dimension, lisp element_type, lisp initial_element,
                  lisp displaced_to, lisp displaced_index_offset)
 {
   int dims = fixnum_value (dimension);
-  if (dims < 0 || dims >= MAX_VECTOR_LENGTH)
+  if (dims < 0 || dims >= static_cast <int> (MAX_VECTOR_LENGTH))
     FErange_error (dimension);
 
   check_array_type (element_type);
@@ -226,7 +226,7 @@ check_extension (lisp extension)
     return 64;
 
   int ext = fixnum_value (extension);
-  if (ext <= 0 || ext >= MAX_VECTOR_LENGTH)
+  if (ext <= 0 || ext >= static_cast <int> (MAX_VECTOR_LENGTH))
     FErange_error (extension);
   return ext;
 }

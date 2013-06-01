@@ -3,7 +3,7 @@
 #include "except.h"
 #include "mman.h"
 
-#define MAGIC 'CODX'
+#define MAGIC (DWORD('C') << 24 | DWORD('O') << 16 | DWORD('D') << 8 | 'X')
 
 static void
 snarf_doc (FILE *fp, lisp vec, lisp symlist)

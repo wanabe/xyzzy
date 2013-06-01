@@ -397,7 +397,7 @@ big5_state::update (int c)
     }
   else
     {
-      if (c >= 0x40 && c <= 0x7e || c >= 0xa1 && c <= 0xfe)
+      if ((c >= 0x40 && c <= 0x7e) || (c >= 0xa1 && c <= 0xfe))
         s_state = 0;
       else
         s_not = 1;
@@ -541,7 +541,7 @@ detect_char_encoding_xyzzy (lisp string)
       utf8.update (c);
       big5.update (c);
       sum |= c;
-      if (nb < sizeof buf)
+      if (nb < static_cast <int> (sizeof buf))
         buf[nb++] = c;
     }
 
@@ -787,7 +787,7 @@ Fmap_to_half_width_region (lisp from, lisp to, lisp keys)
     {
       Char c = point.ch ();
       if (c < thp.fmin || c > thp.fmax)
-        for (int i = 0; i < numberof (toh); i++)
+        for (u_int i = 0; i < numberof (toh); i++)
           if (c >= toh[i].min && c <= toh[i].max)
             {
               c = toh[i].b[c - toh[i].min];
@@ -814,7 +814,7 @@ Fmap_to_half_width_region (lisp from, lisp to, lisp keys)
         {
           Char c = point.ch ();
           if (c < thp.fmin || c > thp.fmax)
-            for (int i = 0; i < numberof (ssh); i++)
+            for (u_int i = 0; i < numberof (ssh); i++)
               if (c >= ssh[i].min && c <= ssh[i].max)
                 {
                   c = ssh[i].b[c - ssh[i].min];
@@ -980,7 +980,7 @@ Fmap_to_half_width_string (lisp string, lisp keys)
     {
       Char c = *s;
       if (c < thp.fmin || c > thp.fmax)
-        for (int i = 0; i < numberof (toh); i++)
+        for (u_int i = 0; i < numberof (toh); i++)
           {
             if (c >= toh[i].min && c <= toh[i].max)
               {
@@ -1010,7 +1010,7 @@ Fmap_to_half_width_string (lisp string, lisp keys)
       Char c = *--se;
       *--d = c;
       if (c < thp.fmin || c > thp.fmax)
-        for (int i = 0; i < numberof (ssh); i++)
+        for (u_int i = 0; i < numberof (ssh); i++)
           if (c >= ssh[i].min && c <= ssh[i].max)
             {
               c = ssh[i].b[c - ssh[i].min];

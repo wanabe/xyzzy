@@ -541,6 +541,12 @@ symbol_name_need_escape_p (lisp readtab, const print_control &pc, lisp object)
         case SCT_TERM_MACRO:
         case SCT_WHITESPACE:
           return 1;
+        case SCT_ILLEGAL:
+        case SCT_CONSTITUENT:
+        case SCT_SINGLE_ESCAPE:
+        case SCT_MULTIPLE_ESCAPE:
+        case SCT_NON_TERM_MACRO:
+          break;
         }
       if (ascii_char_p (*p))
         ctype |= _char_type (*p);
@@ -609,6 +615,11 @@ print_symbol_name (wStream &stream, const print_control &pc, lisp object)
         case SCT_MULTIPLE_ESCAPE:
           stream.add ('\\');
           break;
+        case SCT_WHITESPACE:
+        case SCT_CONSTITUENT:
+        case SCT_TERM_MACRO:
+        case SCT_NON_TERM_MACRO:
+          break;
         }
       stream.add (*p);
     }
@@ -634,7 +645,7 @@ print_symbol (wStream &stream, const print_control &pc, lisp object)
                || multiple_value::value (1) == Qnil)
         {
           if (xpackage_name (package) == Qnil)
-            stream.add ('#:');
+            stream.add (static_cast <int> ('#') << 8 | ':');
           else
             {
               print_symbol_name (stream, pc, xpackage_name (package));
@@ -851,6 +862,11 @@ quote_char (wStream &stream, Char c)
     case SCT_SINGLE_ESCAPE:
     case SCT_MULTIPLE_ESCAPE:
       stream.add ('\\');
+      break;
+    case SCT_ILLEGAL:
+    case SCT_WHITESPACE:
+    case SCT_CONSTITUENT:
+    case SCT_NON_TERM_MACRO:
       break;
     }
 }
@@ -1380,8 +1396,8 @@ print_error (wStream &stream, const print_control &, lisp object)
         stream.add (s);
       else
         {
-          char buf[1024];
-          static char *args[] = {"", "", "", "", 0,};
+          char buf[1024], *empty = const_cast <char *> ("");
+          static char *args[] = {empty, empty, empty, empty, 0,};
           if (!FormatMessage ((FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY
                                | FORMAT_MESSAGE_MAX_WIDTH_MASK),
                               0, xerror_number (object), GetUserDefaultLangID (),
@@ -1484,7 +1500,7 @@ print_buffer_name (wStream &stream, const Buffer *bp)
   if (bp->b_version != 1)
     {
       char b[64];
-      sprintf (b, "<%d>", bp->b_version);
+      sprintf (b, "<%ld>", bp->b_version);
       stream.add (b);
     }
 }
@@ -1522,7 +1538,7 @@ print_marker (wStream &stream, const print_control &, lisp object)
       else
         {
           char b[64];
-          sprintf (b, ": %u", xmarker_point (object));
+          sprintf (b, ": %lu", xmarker_point (object));
           stream.add (b);
         }
       stream.add ('>');
@@ -3945,7 +3961,7 @@ Fmessage_box (lisp lmsg, lisp ltitle, lisp styles, lisp args)
   memset (captions, 0, sizeof captions);
   msgbox_captions (lcaptions, args);
 
-  for (int i = 0; i < numberof (lcaptions); i++)
+  for (u_int i = 0; i < numberof (lcaptions); i++)
     {
       lisp x = lcaptions[i];
       if (x && x != Qnil)

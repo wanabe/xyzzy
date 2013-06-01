@@ -47,16 +47,14 @@ gen_iso2022state (int argc, char **argv)
 #endif
 {
   u_char chars_buf[257], *const chars = chars_buf + 1;
-  u_char chars_rev[256];
   int chars_max = 1;
 
   memset (chars_buf, 0, sizeof chars_buf);
-  for (int i = 0; i < numberof (escseq); i++)
+  for (u_int i = 0; i < numberof (escseq); i++)
     for (const char *p = escseq[i].s; *p; p++)
-      if (!chars[*p])
+      if (!chars[static_cast <u_char> (*p)])
         {
-          chars[*p] = chars_max;
-          chars_rev[chars_max] = *p;
+          chars[static_cast <u_char> (*p)] = chars_max;
           chars_max++;
         }
 
@@ -64,12 +62,12 @@ gen_iso2022state (int argc, char **argv)
   memset (state, 0, sizeof state);
   int state_max = 0;
 
-  for (int i = 0; i < numberof (escseq); i++)
+  for (u_int i = 0; i < numberof (escseq); i++)
     {
       int cur_state = 0;
       for (const char *p = escseq[i].s; *p; p++)
         {
-          int c = chars[*p];
+          int c = chars[static_cast <u_char> (*p)];
           int next_state;
           if (!state[c][cur_state] || state[c][cur_state] & STATE_INVALID)
             next_state = p[1] ? ++state_max : 0;
@@ -94,17 +92,17 @@ gen_iso2022state (int argc, char **argv)
         }
     }
 
-  for (int i = 0; i < numberof (escseq); i++)
+  for (u_int i = 0; i < numberof (escseq); i++)
     {
-      int c = chars[*escseq[i].s];
+      int c = chars[static_cast <u_char> (*escseq[i].s)];
       for (int j = 1; j <= state_max; j++)
         if (state[c][j] == STATE_INVALID)
           state[c][j] |= state[c][0];
     }
 
-  for (int i = 0; i < numberof (intermediate_chars); i++)
+  for (u_int i = 0; i < numberof (intermediate_chars); i++)
     for (const char *p = intermediate_chars[i] + 1; *p; p++)
-      chars[*p] = chars[intermediate_chars[i][0]];
+      chars[static_cast <u_char> (*p)] = chars[static_cast <u_char> (intermediate_chars[i][0])];
 
   printf ("#define ISO2022STATE_TERM 0x%02x\n", STATE_TERM);
   printf ("#define ISO2022STATE_MASK 0x%02x\n", STATE_TERM - 1);

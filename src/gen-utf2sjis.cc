@@ -13,7 +13,7 @@ buildhash (const int *from, const int *to, int len, const char *name)
 {
   char buf[65536];
   int wbuf[65536][2];
-  for (int size = len; size < sizeof buf; size++)
+  for (int size = len; size < static_cast <int> (sizeof buf); size++)
     {
       memset (buf, 0, size);
       int i;

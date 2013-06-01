@@ -15,7 +15,7 @@ class buffer_info
   char *minor_mode (lisp, char *, char *, int &) const;
 public:
   buffer_info (const Window *wp, const Buffer *bp, char **posp, int *ime, char **percentp)
-       : b_wp (wp), b_bufp (bp), b_posp (posp), b_ime (ime), b_percentp(percentp) {}
+       : b_wp (wp), b_bufp (bp), b_posp (posp), b_percentp(percentp), b_ime (ime) {}
   char *format (lisp, char *, char *) const;
   char *modified (char *, int) const;
   char *read_only (char *, int) const;

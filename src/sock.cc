@@ -124,7 +124,7 @@ sock::errmsg (int e)
     };
   if (e < WSABASEERR || e > WSANO_DATA)
     return 0;
-  for (int i = 0; i < numberof (msg); i++)
+  for (u_int i = 0; i < numberof (msg); i++)
     if (e == msg[i].e)
       return msg[i].s;
   return 0;

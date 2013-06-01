@@ -3,12 +3,14 @@
 #include "xdde.h"
 #include "safe_ptr.h"
 
-static HDDEDATA topic_list_callback (DdeCallbackInfo *);
-static HDDEDATA item_list_callback (DdeCallbackInfo *);
-static HDDEDATA formats_callback (DdeCallbackInfo *);
-static HDDEDATA help_callback (DdeCallbackInfo *);
-static HDDEDATA eval_callback (DdeCallbackInfo *);
-static int eval_matcher (const DdeItemList *, HSZ);
+static HDDEDATA __stdcall topic_list_callback (DdeCallbackInfo *);
+static HDDEDATA __stdcall item_list_callback (DdeCallbackInfo *);
+static HDDEDATA __stdcall formats_callback (DdeCallbackInfo *);
+#ifdef notyet
+static HDDEDATA __stdcall help_callback (DdeCallbackInfo *);
+#endif
+static HDDEDATA __stdcall eval_callback (DdeCallbackInfo *);
+static int __stdcall eval_matcher (const DdeItemList *, HSZ);
 
 const char DdeServerName[] = "Xyzzy";
 
@@ -332,6 +334,7 @@ formats_callback (DdeCallbackInfo *dci)
   return hdata;
 }
 
+#ifdef notyet
 static HDDEDATA
 help_callback (DdeCallbackInfo *dci)
 {
@@ -341,6 +344,7 @@ help_callback (DdeCallbackInfo *dci)
     return 0;
   return HDDEDATA (dci->type == XTYP_REQUEST ? DDE_FNOTPROCESSED : 0);
 }
+#endif
 
 static int
 eval_matcher (const DdeItemList *il, HSZ hsz)

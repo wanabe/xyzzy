@@ -43,7 +43,7 @@ const Win32Exception::known_exception Win32Exception::known_excep[] =
 static const char*
 get_exception_description (u_int code)
 {
-  for (int i = 0; i < numberof (Win32Exception::known_excep); i++)
+  for (u_int i = 0; i < numberof (Win32Exception::known_excep); i++)
     if (code == Win32Exception::known_excep[i].code)
       return Win32Exception::known_excep[i].desc;
   return "Unknown exception";
@@ -231,7 +231,7 @@ print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
   char *p = path + lstrlen (path);
   if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, path + sizeof path - p - 1))
     *p = '!';
-  fprintf (fp, "%08x - %08x: %s\n", addr, addr + bi->RegionSize, path);
+  fprintf (fp, "%08lx - %08lx: %s\n", addr, addr + bi->RegionSize, path);
 }
 
 static void
@@ -257,17 +257,17 @@ static void
 x86_print_registers (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Registers:\n");
-  fprintf (fp, "EAX: %08x  EBX: %08x  ECX: %08x  EDX: %08x  ESI: %08x\n",
+  fprintf (fp, "EAX: %08lx  EBX: %08lx  ECX: %08lx  EDX: %08lx  ESI: %08lx\n",
            c.Eax, c.Ebx, c.Ecx, c.Edx, c.Esi);
-  fprintf (fp, "EDI: %08x  ESP: %08x  EBP: %08x  EIP: %08x  EFL: %08x\n",
+  fprintf (fp, "EDI: %08lx  ESP: %08lx  EBP: %08lx  EIP: %08lx  EFL: %08lx\n",
            c.Edi, c.Esp, c.Ebp, c.Eip, c.EFlags);
-  fprintf (fp, "CS: %04x  DS: %04x  ES: %04x  SS: %04x  FS: %04x  GS: %04x\n\n",
+  fprintf (fp, "CS: %04lx  DS: %04lx  ES: %04lx  SS: %04lx  FS: %04lx  GS: %04lx\n\n",
            c.SegCs, c.SegDs, c.SegEs, c.SegSs, c.SegFs, c.SegGs);
 
   DWORD eip = c.Eip - 16;
   for (int j = 0; j < 2; j++)
     {
-      fprintf (fp, "%08x:", eip);
+      fprintf (fp, "%08lx:", eip);
       for (int i = 0; i < 16; i++, eip++)
         {
           if (IsBadReadPtr ((void *)eip, 1))
@@ -294,7 +294,7 @@ x86_stack_dump (FILE *fp, const CONTEXT &c)
           || nread != sizeof buf)
         break;
       for (int j = 0; j < 16; j += 4)
-        fprintf (fp, "%08x: %08x %08x %08x %08x\n",
+        fprintf (fp, "%08lx: %08lx %08lx %08lx %08lx\n",
                  esp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
       fprintf (fp, "\n");
       if (ebp <= esp || ebp & 3)
@@ -314,7 +314,7 @@ bad_object_p (FILE *fp, lisp object)
 {
   if (!IsBadReadPtr (object, sizeof object))
     return 0;
-  fprintf (fp, "(???)\n");
+  fprintf (fp, "(??" "?)\n");
   return 1;
 }
 
@@ -425,7 +425,7 @@ cleanup_exception ()
     {
       fprintf (fp, "%s %s Crash log:\n\n", ProgramName, VersionString);
 
-      fprintf (fp, "Windows %s %d.%02d.%d %s\n\n",
+      fprintf (fp, "Windows %s %ld.%02ld.%ld %s\n\n",
                sysdep.windows_name,
                sysdep.os_ver.dwMajorVersion,
                sysdep.os_ver.dwMinorVersion,
@@ -433,7 +433,7 @@ cleanup_exception ()
                sysdep.os_ver.szCSDVersion);
 
       fprintf (fp, "%08x: %s\n", Win32Exception::code, desc);
-      fprintf (fp, "at %08x", Win32Exception::r.ExceptionAddress);
+      fprintf (fp, "at %08lx", reinterpret_cast <u_long> (Win32Exception::r.ExceptionAddress));
       if (*module)
         fprintf (fp, " (%s)", module);
       fprintf (fp, "\n\n");
@@ -444,8 +444,8 @@ cleanup_exception ()
 #else
 # error "yet"
 #endif
-      fprintf (fp, "Initial stack: %08x  GC: %d\n\n",
-               app.initial_stack, app.in_gc);
+      fprintf (fp, "Initial stack: %08lx  GC: %d\n\n",
+               reinterpret_cast <u_long> (app.initial_stack), app.in_gc);
 
       print_module_allocation (fp);
       lisp_stack_trace (fp);
@@ -457,8 +457,8 @@ cleanup_exception ()
     }
 
   char msg[1024], *p = msg;
-  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %08x",
-                desc, Win32Exception::r.ExceptionAddress);
+  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %08lx",
+                desc, reinterpret_cast <u_long> (Win32Exception::r.ExceptionAddress));
   if (*module)
     p += sprintf (p, " (%s)", module);
   *p++ = '\n';

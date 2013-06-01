@@ -938,7 +938,6 @@ kinsoku_bwd (fold_info &f, Char nextch, int limit,
 {
   Chunk *cp = f.cp;
   const Char *p = f.p;
-  const Char *pe = f.pe;
   int skip = 1;
   while (1)
     {

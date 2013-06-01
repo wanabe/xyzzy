@@ -700,7 +700,7 @@ Ftruename (lisp pathname)
 {
   char path[PATH_MAX + 1], truename[PATH_MAX + 1];
   pathname2cstr (pathname, path);
-  if (WINFS::GetFileAttributes (path) == -1)
+  if (WINFS::GetFileAttributes (path) == DWORD (-1))
     file_error (GetLastError (), pathname);
 
   map_sl_to_backsl (path);
@@ -827,10 +827,10 @@ sub_directory_p (char *dir, const char *parent)
   if (sub_dirp_by_name (dir, parent))
     {
       DWORD a = WINFS::GetFileAttributes (dir);
-      if (a == -1 || !(a & FILE_ATTRIBUTE_DIRECTORY))
+      if (a == DWORD (-1) || !(a & FILE_ATTRIBUTE_DIRECTORY))
         return 0;
       a = WINFS::GetFileAttributes (parent);
-      if (a == -1 || !(a & FILE_ATTRIBUTE_DIRECTORY))
+      if (a == DWORD (-1) || !(a & FILE_ATTRIBUTE_DIRECTORY))
         return 0;
       return 1;
     }
@@ -1127,7 +1127,7 @@ solve_access_denied (lisp access_denied, const char *path, lisp lpath)
   if (access_denied == Kforce)
     {
       DWORD atr = WINFS::GetFileAttributes (path);
-      if (atr == -1)
+      if (atr == DWORD (-1))
         file_error (GetLastError (), lpath);
       if (!(atr & (FILE_ATTRIBUTE_HIDDEN
                    | FILE_ATTRIBUTE_READONLY
@@ -1181,7 +1181,7 @@ Fdelete_file (lisp name, lisp keys)
           if (e == ERROR_ACCESS_DENIED)
             {
               DWORD atr = solve_access_denied (access_denied, buf, name);
-              if (atr == -1)
+              if (atr == DWORD (-1))
                 return Qnil;
               if (WINFS::DeleteFile (buf))
                 return Qt;
@@ -1196,6 +1196,7 @@ Fdelete_file (lisp name, lisp keys)
   return Qt;
 }
 
+#if 0
 static int
 copyn (char *d, const char *s, int n, int l)
 {
@@ -1205,6 +1206,7 @@ copyn (char *d, const char *s, int n, int l)
   d[l] = 0;
   return l;
 }
+#endif
 
 static void
 rename_short_name (const char *fpath, const char *tname, const char *longname)
@@ -1319,7 +1321,7 @@ safe_write_handle::~safe_write_handle ()
 {
   if (!sw_complete && valid ())
     {
-      if (sw_atr != -1)
+      if (sw_atr != DWORD (-1))
         WINFS::SetFileAttributes (sw_path, sw_atr);
       if (sw_delete_if_fail)
         {
@@ -1367,7 +1369,7 @@ safe_write_handle::open_for_write (lisp if_exists, int open_mode, int &e)
 int
 safe_write_handle::ensure_room (LONG hi, LONG lo)
 {
-  if (SetFilePointer (*this, lo, &hi, FILE_BEGIN) == -1)
+  if (SetFilePointer (*this, lo, &hi, FILE_BEGIN) == DWORD (-1))
     {
       int e = GetLastError ();
       if (e != NO_ERROR)
@@ -1378,7 +1380,7 @@ safe_write_handle::ensure_room (LONG hi, LONG lo)
 
   sw_delete_if_fail = 1;
 
-  if (SetFilePointer (*this, 0, 0, FILE_BEGIN) == -1)
+  if (SetFilePointer (*this, 0, 0, FILE_BEGIN) == DWORD (-1))
     return GetLastError ();
 
   return NO_ERROR;
@@ -1429,7 +1431,7 @@ Fcopy_file (lisp from_name, lisp to_name, lisp keys)
   if (ofw == OFW_BAD && e == ERROR_ACCESS_DENIED)
     {
       DWORD atr = solve_access_denied (access_denied, w.path (), to_name);
-      if (atr == -1)
+      if (atr == DWORD (-1))
         return Qnil;
       w.set_org_atr (atr);
       ofw = w.open_for_write (if_exists, open_mode, e);
@@ -1462,7 +1464,7 @@ Fcopy_file (lisp from_name, lisp to_name, lisp keys)
 
   DWORD hi, lo;
   lo = GetFileSize (r, &hi);
-  if (lo == -1 && (e = GetLastError ()) != NO_ERROR)
+  if (lo == DWORD (-1) && (e = GetLastError ()) != NO_ERROR)
     file_error (e, from_name);
 
   e = w.ensure_room (hi, lo);
@@ -1494,7 +1496,7 @@ Fcopy_file (lisp from_name, lisp to_name, lisp keys)
       if (GetFileTime (r, 0, 0, &t))
         SetFileTime (w, 0, 0, &t);
       DWORD atr = WINFS::GetFileAttributes (fromf);
-      if (atr != -1)
+      if (atr != DWORD (-1))
         WINFS::SetFileAttributes (w.path (), atr);
     }
 
@@ -1559,7 +1561,7 @@ Frename_file (lisp from_name, lisp to_name, lisp keys)
               if (e != ERROR_ACCESS_DENIED)
                 file_error (e, to_name);
               atr = solve_access_denied (access_denied, tof, to_name);
-              if (atr == -1)
+              if (atr == DWORD (-1))
                 return Qnil;
               if (!WINFS::DeleteFile (tof))
                 {
@@ -1590,7 +1592,7 @@ mkdirhier (char *path, int exists_ok)
   if (exists_ok)
     {
       DWORD a = WINFS::GetFileAttributes (path);
-      if (a != -1 && a & FILE_ATTRIBUTE_DIRECTORY)
+      if (a != DWORD (-1) && a & FILE_ATTRIBUTE_DIRECTORY)
         return 1;
     }
   else
@@ -1608,7 +1610,7 @@ mkdirhier (char *path, int exists_ok)
   if (WINFS::CreateDirectory (path, 0))
     return 1;
   DWORD a = WINFS::GetFileAttributes (path);
-  return a != -1 && a & FILE_ATTRIBUTE_DIRECTORY;
+  return a != DWORD (-1) && a & FILE_ATTRIBUTE_DIRECTORY;
 }
 
 lisp
@@ -1640,7 +1642,7 @@ Fdelete_directory (lisp dirname, lisp keys)
       if (e == ERROR_ACCESS_DENIED)
         {
           DWORD atr = solve_access_denied (access_denied, name, dirname);
-          if (atr == -1)
+          if (atr == DWORD (-1))
             return Qnil;
           if (WINFS::RemoveDirectory (name))
             return Qt;
@@ -1721,7 +1723,7 @@ Fget_file_attributes (lisp lpath)
   char path[PATH_MAX + 1];
   pathname2cstr (lpath, path);
   DWORD atr = WINFS::GetFileAttributes (path);
-  if (atr == -1)
+  if (atr == DWORD (-1))
     file_error (GetLastError (), lpath);
   return make_fixnum (atr);
 }
@@ -1753,7 +1755,7 @@ Fmodify_file_attributes (lisp lpath, lisp lon, lisp loff)
   DWORD off = ((loff && loff != Qnil)
                ? (fixnum_value (loff) & VALID_FILE_ATTRIBUTES) : 0);
   DWORD atr = WINFS::GetFileAttributes (path);
-  if (atr == -1)
+  if (atr == DWORD (-1))
     file_error (GetLastError (), lpath);
   if (!WINFS::SetFileAttributes (path, (atr & ~off) | on))
     file_error (GetLastError (), lpath);
@@ -2064,7 +2066,7 @@ static const u_char fat32_devcat[] = {0x48, 0x08};
 static int
 win9x_lock_logical_volume (HANDLE hvwin32, int drive, int lock_level, int perm)
 {
-  for (int i = 0; i < numberof (fat32_devcat); i++)
+  for (u_int i = 0; i < numberof (fat32_devcat); i++)
     {
       DIOC_REGISTERS regs = {0};
       regs.reg_EAX = 0x440d;
@@ -2085,7 +2087,7 @@ win9x_lock_logical_volume (HANDLE hvwin32, int drive, int lock_level, int perm)
 static int
 win9x_unlock_logical_volume (HANDLE hvwin32, int drive)
 {
-  for (int i = 0; i < numberof (fat32_devcat); i++)
+  for (u_int i = 0; i < numberof (fat32_devcat); i++)
     {
       DIOC_REGISTERS regs = {0};
       regs.reg_EAX = 0x440d;
@@ -2348,7 +2350,7 @@ list_server_resources::doit ()
   r.dwUsage = RESOURCEUSAGE_CONTAINER;
   r.lpLocalName = 0;
   r.lpRemoteName = m_server;
-  r.lpComment = "";
+  r.lpComment = const_cast <char *> ("");
   r.lpProvider = 0;
 
   HANDLE h;

@@ -33,7 +33,7 @@ void
 write_conf (const char *section, const char *name, const RECT &r)
 {
   char buf[128];
-  sprintf (buf, "(%d,%d)-(%d,%d)", r.left, r.top, r.right, r.bottom);
+  sprintf (buf, "(%ld,%ld)-(%ld,%ld)", r.left, r.top, r.right, r.bottom);
   WritePrivateProfileString (section, name, buf, app.ini_file_path);
 }
 
@@ -41,7 +41,7 @@ void
 write_conf (const char *section, const char *name, const LOGFONT &lf)
 {
   char buf[128];
-  sprintf (buf, "%d,\"%s\",%d", lf.lfHeight, lf.lfFaceName, lf.lfCharSet);
+  sprintf (buf, "%ld,\"%s\",%d", lf.lfHeight, lf.lfFaceName, lf.lfCharSet);
   WritePrivateProfileString (section, name, buf, app.ini_file_path);
 }
 
@@ -57,7 +57,7 @@ void
 write_conf (const char *section, const char *name, const WINDOWPLACEMENT &w)
 {
   char buf[128];
-  sprintf (buf, "(%d,%d)-(%d,%d),%d",
+  sprintf (buf, "(%ld,%ld)-(%ld,%ld),%d",
            w.rcNormalPosition.left,
            w.rcNormalPosition.top,
            w.rcNormalPosition.right,
@@ -95,7 +95,7 @@ read_conf (const char *section, const char *name, int &value)
 {
   char buf[32];
   int l = read_conf (section, name, buf, sizeof buf);
-  if (!l || l >= sizeof buf - 1)
+  if (!l || l >= static_cast <int> (sizeof buf) - 1)
     return 0;
   return parse_int (buf, value);
 }
@@ -142,7 +142,7 @@ read_conf (const char *section, const char *name, RECT &rr)
 {
   char buf[128];
   int l = read_conf (section, name, buf, sizeof buf);
-  if (!l || l >= sizeof buf - 1)
+  if (!l || l >= static_cast <int> (sizeof buf) - 1)
     return 0;
   int t, r, b;
   if (sscanf (buf, "(%d,%d)-(%d,%d)", &l, &t, &r, &b) != 4)
@@ -159,7 +159,7 @@ read_conf (const char *section, const char *name, LOGFONT &lf)
 {
   char buf[128];
   int l = read_conf (section, name, buf, sizeof buf);
-  if (!l || l >= sizeof buf - 1)
+  if (!l || l >= static_cast <int> (sizeof buf) - 1)
     return 0;
   memset (&lf, 0, sizeof lf);
   int h, cs;
@@ -175,7 +175,7 @@ read_conf (const char *section, const char *name, PRLOGFONT &lf)
 {
   char buf[128];
   int l = read_conf (section, name, buf, sizeof buf);
-  if (!l || l >= sizeof buf - 1)
+  if (!l || l >= static_cast <int> (sizeof buf) - 1)
     return 0;
   int point, cs, bold, italic;
   if (sscanf (buf, "%d,\"%31[^\"]\",%d,%d,%d",
@@ -193,7 +193,7 @@ read_conf (const char *section, const char *name, WINDOWPLACEMENT &w)
 {
   char buf[128];
   int l = read_conf (section, name, buf, sizeof buf);
-  if (!l || l >= sizeof buf - 1)
+  if (!l || l >= static_cast <int> (sizeof buf) - 1)
     return 0;
   int t, r, b, s;
   if (sscanf (buf, "(%d,%d)-(%d,%d),%d", &l, &t, &r, &b, &s) != 5)

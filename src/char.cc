@@ -573,8 +573,8 @@ Fiso_code_char (lisp code, lisp charset, lisp vender)
   int c1 = cc >> 8, c2 = cc & 255;
   if (charset == Kbig5)
     {
-      if (c1 >= 0xa1 && c1 <= 0xf8 && c1 != 0xc8
-          && c2 >= 0x40 && c2 <= 0x7e || c2 >= 0xa1 && c2 <= 0xfe)
+      if ((c1 >= 0xa1 && c1 <= 0xf8 && c1 != 0xc8
+          && c2 >= 0x40 && c2 <= 0x7e) || (c2 >= 0xa1 && c2 <= 0xfe))
         return make_char (big5_to_int (c1, c2));
       return Qnil;
     }

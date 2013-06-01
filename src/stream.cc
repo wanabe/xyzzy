@@ -292,7 +292,8 @@ create_file_stream (lisp filename, lisp direction, lisp if_exists,
   int encoding = stream_encoding (lencoding);
   int dont_create = if_does_not_exist != Kcreate;
   int need_alt = 0;
-  int create, access;
+  int create;
+  DWORD access;
 
   if (direction == Kinput || direction == Kprobe)
     {
@@ -1884,7 +1885,7 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_file_output:
         case st_file_io:
           {
-            for (size_t i = 0; i < size; i++)
+            for (u_int i = 0; i < size; i++)
               putc_file_stream (stream, b[i]);
             xstream_column (stream) = update_column (xstream_column (stream), b, size);
             return;
@@ -1946,7 +1947,7 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_socket:
           try
             {
-              for (size_t i = 0; i < size; i++)
+              for (u_int i = 0; i < size; i++)
                 putc_sock_stream (stream, b[i]);
               xstream_column (stream) = update_column (xstream_column (stream), b, size);
             }

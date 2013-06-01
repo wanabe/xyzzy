@@ -1225,7 +1225,7 @@ Fcopy_to_clipboard (lisp string)
   if (open_clipboard (app.toplev))
     {
       if (EmptyClipboard ())
-        for (int i = 0; i < numberof (clp) && clp[i].hgl; i++)
+        for (u_int i = 0; i < numberof (clp) && clp[i].hgl; i++)
           {
             if (!SetClipboardData (clp[i].fmt, clp[i].hgl))
               break;
@@ -1234,7 +1234,7 @@ Fcopy_to_clipboard (lisp string)
           }
       CloseClipboard ();
     }
-  for (int i = 0; i < numberof (clp); i++)
+  for (u_int i = 0; i < numberof (clp); i++)
     if (clp[i].hgl)
       GlobalFree (clp[i].hgl);
   xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qnil;
@@ -1566,7 +1566,7 @@ Buffer::textprop_adjust_deletion (point_t point, int size)
               p->t_range.p1 -= size;
               p->t_range.p2 -= size;
             }
-          while (p = p->t_next);
+          while ((p = p->t_next));
           break;
         }
       if (p->t_range.p2 > point)

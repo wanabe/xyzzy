@@ -102,11 +102,11 @@ static int
 init_home_dir (const char *path)
 {
   char home[PATH_MAX], *tem;
-  int l = WINFS::GetFullPathName (path, sizeof home, home, &tem);
+  DWORD l = WINFS::GetFullPathName (path, sizeof home, home, &tem);
   if (!l || l >= sizeof home)
     return 0;
   DWORD f = WINFS::GetFileAttributes (home);
-  if (f == -1 || !(f & FILE_ATTRIBUTE_DIRECTORY))
+  if (f == DWORD (-1) || !(f & FILE_ATTRIBUTE_DIRECTORY))
     return 0;
   xsymbol_value (Qhome_dir) = make_path (home);
   return 1;
@@ -175,7 +175,7 @@ init_user_config_path (const char *config_path)
   if (config_path)
     {
       char path[PATH_MAX], *tem;
-      int l = WINFS::GetFullPathName (config_path, sizeof path, path, &tem);
+      DWORD l = WINFS::GetFullPathName (config_path, sizeof path, path, &tem);
       if (l && l < sizeof path)
         {
           DWORD a = WINFS::GetFileAttributes (path);
@@ -213,7 +213,7 @@ init_user_inifile_path (const char *ini_file)
   if (ini_file && find_slash (ini_file))
     {
       char path[PATH_MAX], *tem;
-      int l = WINFS::GetFullPathName (ini_file, sizeof path, path, &tem);
+      DWORD l = WINFS::GetFullPathName (ini_file, sizeof path, path, &tem);
       if (l && l < sizeof path)
         {
           HANDLE h = CreateFile (path, GENERIC_READ, 0, 0, OPEN_ALWAYS,
@@ -266,7 +266,9 @@ init_env_symbols (const char *config_path, const char *ini_file)
   init_windows_dir ();
 }
 
+#ifdef _MSC_VER
 #pragma optimize ("g", off)
+#endif
 static void
 init_math_symbols ()
 {
@@ -338,7 +340,9 @@ init_math_symbols ()
 
 #undef CP
 }
+#ifdef _MSC_VER
 #pragma optimize ("", on)
+#endif
 
 static void
 init_symbol_value_once ()
@@ -579,8 +583,8 @@ init_lisp_objects ()
     if (!strcmp (__argv[ac], "-image"))
       {
         char *tem;
-        int l = WINFS::GetFullPathName (__argv[ac + 1], sizeof app.dump_image,
-                                        app.dump_image, &tem);
+        DWORD l = WINFS::GetFullPathName (__argv[ac + 1], sizeof app.dump_image,
+                                          app.dump_image, &tem);
         if (!l || l >= sizeof app.dump_image)
           *app.dump_image = 0;
       }
@@ -723,12 +727,14 @@ register_wndclasses (HINSTANCE hinst)
   return 1;
 }
 
+#if 0
 static int __cdecl
 handle_new_failure (size_t)
 {
   FEstorage_error ();
   return 0;
 }
+#endif
 
 static void
 copy_handle (DWORD f, int fd)

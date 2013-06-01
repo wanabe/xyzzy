@@ -541,7 +541,7 @@ print_engine::init_font (HDC hdc)
 
   if (!pe_fixed_pitch)
     {
-      int i;
+      u_int i;
       for (i = 0; i < FONT_MAX; i++)
         pe_offset[i].x = pe_offset2x[i] = 0;
 
@@ -650,7 +650,6 @@ int
 print_engine::make_bitmap (HDC hdc)
 {
   memset (&pe_bi, 0, sizeof pe_bi);
-  BITMAPINFOHEADER &bi = pe_bi.bi;
   pe_bi.bi.biSize = sizeof pe_bi.bi;
   pe_bi.bi.biWidth = pe_sep_pxl + pe_page_width;
   pe_bi.bi.biHeight = pe_cell.cy;
@@ -867,7 +866,7 @@ print_engine::paint_jisx0212 (PaintCtx &ctx, Char cc) const
       int o = l == 2 ? pe_offset2x[FONT_JP] : pe_offset[FONT_JP].x;
       SelectObject (ctx.hdc, pe_hfonts[FONT_JP]);
       ExtTextOutW (ctx.hdc, ctx.x + o, ctx.y + pe_offset[FONT_JP].y,
-                   0, 0, &wc, 1, 0);
+                   0, 0, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
     }
   else
     {
@@ -888,7 +887,7 @@ print_engine::paint_full_width (PaintCtx &ctx, Char cc, int f) const
     {
       SelectObject (ctx.hdc, pe_hfonts[f]);
       ExtTextOutW (ctx.hdc, ctx.x + pe_offset[f].x, ctx.y + pe_offset[f].y,
-                   0, 0, &wc, 1, 0);
+                   0, 0, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
     }
   else
     {
@@ -909,7 +908,7 @@ print_engine::paint_latin (PaintCtx &ctx, Char cc, int f) const
     {
       SelectObject (ctx.hdc, pe_hfonts[f]);
       ExtTextOutW (ctx.hdc, ctx.x + pe_offset[f].x, ctx.y + pe_offset[f].y,
-                   0, 0, &wc, 1, 0);
+                   0, 0, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
     }
   else
     {
@@ -940,7 +939,7 @@ print_engine::paint_lucida (PaintCtx &ctx, Char cc) const
           const lucida_spacing *p = &lucida_spacing_table[wc - UNICODE_SMLCDM_MIN];
           o = p->a >= 0 ? 0 : -p->a * pe_cell.cy / LUCIDA_BASE_HEIGHT;
         }
-      ExtTextOutW (ctx.hdc, ctx.x + o, ctx.y, 0, 0, &wc, 1, 0);
+      ExtTextOutW (ctx.hdc, ctx.x + o, ctx.y, 0, 0, reinterpret_cast <LPCWSTR> (&wc), 1, 0);
       DeleteObject (SelectObject (ctx.hdc, of));
     }
   else
@@ -975,7 +974,7 @@ print_engine::paint_line (HDC hdc, int x, int y, Point &cur_point, long &linenum
       if (hdc && pe_settings.ps_print_linenum)
         {
           char b[16];
-          sprintf (b, "%*d ", LINENUM_WIDTH, linenum % 1000000);
+          sprintf (b, "%*ld ", LINENUM_WIDTH, linenum % 1000000);
           if (pe_fixed_pitch)
             for (int i = 0; i < LINENUM_WIDTH + 1; i++)
               paint_ascii (ctx, b[i]);
@@ -2139,7 +2138,7 @@ get_glyph_width (Char cc, const glyph_width &gw)
         if (wc != ucs2_t (-1))
           {
             SelectObject (gw.hdc, gw.hfonts[f]);
-            GetTextExtentPoint32W (gw.hdc, &wc, 1, &sz);
+            GetTextExtentPoint32W (gw.hdc, reinterpret_cast <LPCWSTR> (&wc), 1, &sz);
           }
         else
           {
