@@ -83,8 +83,8 @@ ChooseFontP::enum_font_size_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, L
     }
   else
     {
-      sprintf (b, "%3d", (pixel ? elf->elfLogFont.lfHeight
-                          : MulDiv (elf->elfLogFont.lfHeight, 72, dpi)));
+      sprintf (b, "%3ld", (pixel ? elf->elfLogFont.lfHeight
+                           : MulDiv (elf->elfLogFont.lfHeight, 72, dpi)));
       if (SendMessage (hwnd, LB_FINDSTRINGEXACT,
                        WPARAM (-1), LPARAM (b)) == LB_ERR)
         SendMessage (hwnd, LB_ADDSTRING, 0, LPARAM (b));
