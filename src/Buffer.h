@@ -282,7 +282,8 @@ FileTime::FileTime (lisp path, int dir_ok)
 inline int
 FileTime::voidp ()
 {
-  return dwLowDateTime == VOID_TIME && dwHighDateTime == VOID_TIME;
+  return static_cast <int> (dwLowDateTime ) == VOID_TIME &&
+         static_cast <int> (dwHighDateTime) == VOID_TIME;
 }
 
 inline FileTime &
