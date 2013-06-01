@@ -647,7 +647,7 @@ void
 Window::init_colors (const XCOLORREF *colors, const XCOLORREF *mlcolors,
                      const XCOLORREF *fg_colors, const XCOLORREF *bg_colors)
 {
-  int i;
+  u_int i;
   if (colors)
     for (i = 0; i < USER_DEFINABLE_COLORS; i++)
       default_xcolors[i] = colors[i];
