@@ -1,4 +1,4 @@
-CFLAGS = -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-charset=cp932 -fexec-charset=cp932
+CFLAGS = -D DSFMT_MEXP=19937 -D __XYZZY__ -D PRIVCTRL_NODLL -I privctrl -I gen -fpermissive -finput-charset=cp932 -fexec-charset=cp932 -Wall
 GEN_DIR = gen
 depend = $1: $(addprefix $(GEN_DIR)/, $2)
 
