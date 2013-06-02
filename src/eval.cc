@@ -515,6 +515,10 @@ funcall_builtin (lisp f, lisp arglist)
       return lfunction_proc_6 (xfunction_fn (f))(stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
     case 7:
       return lfunction_proc_7 (xfunction_fn (f))(stack[-7], stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
+    case 8:
+      return lfunction_proc_8 (xfunction_fn (f))(stack[-8], stack[-7], stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
+    case 9:
+      return lfunction_proc_9 (xfunction_fn (f))(stack[-9], stack[-8], stack[-7], stack[-6], stack[-5], stack[-4], stack[-3], stack[-2], stack[-1]);
     }
   FEtoo_many_arguments ();
 # endif
